@@ -1,19 +1,34 @@
+
+
 import { Routes, Route } from "react-router-dom";
-import MovementFlow from "../features/MovementFlow/MovementFlow";
+import MainLayout from "../layouts/MainLayout";
 import Dashboard from "../features/Dashboard/Dashboard";
+import MovementFlow from "../features/MovementFlow/MovementFlow";
 import Heatmap from "../features/Heatmap/Heatmap";
+import Downtime from "../features/Downtime/Downtime";
+import ROI from "../features/ROI/ROI";
+import CES from "../features/CES/CES";
+// (Các component giả lập cho các chức năng chưa code)
+const ThoiGianDung = () => <div className="p-4">Nội dung chức năng Thời gian dừng</div>;
+const VungQuanTam = () => <div className="p-4">Nội dung chức năng Vùng quan tâm</div>;
+const DiemTuongTac = () => <div className="p-4">Nội dung chức năng Điểm tương tác</div>;
+
 import ROI from "../features/ROI/ROI";
 import Downtime from "../features/Downtime/Downtime";
+
 
 const AppRouter = () => {
   return (
     <Routes>
-      <Route path="/" element={<div>Home Page</div>} />
-      <Route path="/MovementFlow" element={<MovementFlow />} />
-      <Route path="/Dashboard" element={<Dashboard />} />
-      <Route path="/Heatmap" element={<Heatmap />} />
-      <Route path="/ROI" element={<ROI />} />
-      <Route path="/Downtime" element={<Downtime />} />
+      <Route path="/" element={<MainLayout />}>
+        <Route index element={<Dashboard />} />
+        <Route path="movement-flow" element={<MovementFlow />} />
+        <Route path="heatmap" element={<Heatmap />} />
+        <Route path="thoi-gian-dung" element={<Downtime />} />
+        <Route path="vung-quan-tam" element={<ROI />} />
+        <Route path="diem-tuong-tac" element={<CES />} />
+      </Route>
+
     </Routes>
   );
 };
