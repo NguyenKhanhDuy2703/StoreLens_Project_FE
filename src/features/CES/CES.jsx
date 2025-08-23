@@ -1,4 +1,4 @@
-import React from 'react';
+
 import CESHeader from './components/CESHeader';
 import CESMetricsPanel from './components/CESMetricsPanel';
 import TopProductsPanel from './components/TopProductsPanel';
