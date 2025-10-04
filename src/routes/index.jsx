@@ -8,7 +8,7 @@ import Heatmap from "../features/Heatmap/Heatmap";
 import Downtime from "../features/Downtime/Downtime";
 import ROI from "../features/ROI/ROI";
 import CES from "../features/CES/CES";
-
+import Map from "../features/Map/Map";
 // (Các component giả lập cho các chức năng chưa code)
 const ThoiGianDung = () => <div className="p-4">Nội dung chức năng Thời gian dừng</div>;
 const VungQuanTam = () => <div className="p-4">Nội dung chức năng Vùng quan tâm</div>;
@@ -27,6 +27,7 @@ const AppRouter = () => {
         <Route path="thoi-gian-dung" element={<Downtime />} />
         <Route path="vung-quan-tam" element={<ROI />} />
         <Route path="diem-tuong-tac" element={<CES />} />
+        <Route path="map" element={<Map />} />
       </Route>
 
     </Routes>
