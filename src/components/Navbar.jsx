@@ -11,6 +11,7 @@ const navItems = [
   { id: 'td', label: 'Thời gian dừng', path: '/thoi-gian-dung', icon: '⏱️' },
   { id: 'roi', label: 'Vùng quan tâm', path: '/vung-quan-tam', icon: '🎯' },
   { id: 'ces', label: 'Điểm tương tác', path: '/diem-tuong-tac', icon: '👋' },
+  { id: 'map', label: 'Map', path: '/map', icon: '🗺️' },
 ];
 
 const Navbar = () => {

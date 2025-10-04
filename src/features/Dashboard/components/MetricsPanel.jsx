@@ -1,10 +1,12 @@
 import { Clock, ShoppingCart, TrendingUp, Users } from "lucide-react";
 
-const MetricsPanel = () => {
+const MetricsPanel = ({peopleEntrened}) => {
+  
+  console.log(peopleEntrened);
   const metrics = [
     {
       title: 'Khách vào hôm nay',
-      value: '1,247',
+      value: peopleEntrened.peopleEntrened,
       change: '+12% so với hôm qua',
       changeValue: '+134',
       trend: 'up',
