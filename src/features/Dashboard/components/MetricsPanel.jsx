@@ -6,7 +6,8 @@ const MetricsPanel = ({peopleEntrened}) => {
   const metrics = [
     {
       title: 'Khách vào hôm nay',
-      value: peopleEntrened.peopleEntrened,
+      // value: peopleEntrened.peopleEntrened,
+      value: '1,256',
       change: '+12% so với hôm qua',
       changeValue: '+134',
       trend: 'up',

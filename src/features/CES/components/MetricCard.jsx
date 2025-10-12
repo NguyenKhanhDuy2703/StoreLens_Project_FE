@@ -1,22 +1,47 @@
 import React from 'react';
-import MetricCard from './MetricCard';
 
-// Dữ liệu cho các thẻ thông số, có thể lấy từ API sau này
-const metricsData = [
-    { title: "Tổng tương tác", value: "2,847", change: "+12.5%", changeType: "increase", icon: "👆", color: "blue", highlight: true },
-    { title: "Điểm CES trung bình", value: "78.5", change: "+5.2%", changeType: "increase", icon: "📊", color: "purple" },
-    { title: "Sản phẩm được chạm", value: "156", change: "+8.1%", changeType: "increase", icon: "🛍️", color: "green" },
-    { title: "Tỷ lệ chuyển đổi", value: "24.3%", change: "-2.1%", changeType: "decrease", icon: "💰", color: "orange" },
-];
+// Component đã được cập nhật để nhận props màu sắc động
+const MetricCard = ({ title, value, subValue, change, changeType, icon, iconBgColor, bgColor, valueColor }) => {
+    const isIncrease = changeType === 'increase';
+    const hasChange = changeType === 'increase' || changeType === 'decrease';
 
-const CESMetricsPanel = () => {
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {metricsData.map((metric, index) => (
-                <MetricCard key={index} {...metric} />
-            ))}
+        // Sử dụng bgColor prop, nếu không có thì mặc định là 'bg-white'
+        // Tăng độ bo góc thành 'rounded-2xl'
+        <div className={`${bgColor || 'bg-white'} p-6 rounded-2xl shadow-sm`}>
+            <div className="flex items-center justify-between">
+                <div>
+                    {/* Đổi màu chữ tiêu đề thành gray-500 cho nhạt hơn */}
+                    <p className="text-sm font-medium text-gray-500">{title}</p>
+                    
+                    {/* Sử dụng valueColor prop, nếu không có thì mặc định là 'text-gray-900' */}
+                    <p className={`text-3xl font-bold ${valueColor || 'text-gray-900'}`}>{value}</p>
+                    
+                    {change && (
+                         <p className={`text-sm text-green-600 flex items-center mt-1`}>
+                            {hasChange && (
+                                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    {isIncrease ? (
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 11l5-5m0 0l5 5m-5-5v12"></path>
+                                    ) : (
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 13l-5 5m0 0l-5-5m5 5V6"></path>
+                                    )}
+                                </svg>
+                            )}
+                            {change}
+                        </p>
+                    )}
+                     {subValue && (
+                        <p className="text-sm text-gray-500 mt-1">{subValue}</p>
+                     )}
+                </div>
+                {/* Giảm kích thước icon container và đổi thành bo góc vuông */}
+                <div className={`w-10 h-10 ${iconBgColor || 'bg-gray-100'} rounded-lg flex items-center justify-center`}>
+                    <span className="text-xl">{icon}</span>
+                </div>
+            </div>
         </div>
     );
 };
 
-export default CESMetricsPanel;
+export default MetricCard;
