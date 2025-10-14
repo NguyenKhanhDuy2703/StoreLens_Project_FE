@@ -1,39 +1,57 @@
 import React from 'react';
+import MetricCard from './MetricCard';
 
-const MetricCard = ({ title, value, change, changeType, icon, color, highlight }) => {
-    const isIncrease = changeType === 'increase';
-    
-    // Ánh xạ màu sắc tới các class của Tailwind
-    const colorClasses = {
-        blue: { text: 'text-blue-600', bg: 'bg-blue-100' },
-        purple: { text: 'text-purple-600', bg: 'bg-purple-100' },
-        green: { text: 'text-green-600', bg: 'bg-green-100' },
-        orange: { text: 'text-orange-600', bg: 'bg-orange-100' },
-    };
+// Dữ liệu đã được cập nhật với màu sắc, icon, và style riêng cho từng thẻ
+const metricsData = [
+    {
+        title: "Tổng số lần nhìn",
+        value: "8,524",
+        change: "+15%",
+        changeType: "increase",
+        icon: "👀",
+        bgColor: "bg-blue-50", // Nền xanh nhạt
+        valueColor: "text-blue-600", // Chữ xanh dương
+        iconBgColor: "bg-white" // Nền icon màu trắng
+    },
+    {
+        title: "Thời gian nhìn TB",
+        value: "6.8s",
+        change: "+5%",
+        changeType: "increase",
+        icon: "⏱️",
+        valueColor: "text-purple-600", // Chữ màu tím
+        iconBgColor: "bg-purple-100",
+        bgColor: "bg-purple-50" // THÊM DÒNG NÀY: Nền tím nhạt
+    },
+    {
+        title: "SP được nhìn nhiều nhất",
+        value: "Coca-Cola",
+        subValue: "1,842 lượt nhìn",
+        icon: "🥤",
+        valueColor: "text-green-600", // Chữ màu xanh lá
+        iconBgColor: "bg-green-100",
+        bgColor: "bg-green-50" // THÊM DÒNG NÀY: Nền xanh lá nhạt
+    },
+    {
+        title: "Tỷ lệ chú ý -> mua",
+        value: "27%",
+        change: "+3.2%",
+        changeType: "increase",
+        icon: "💰",
+        valueColor: "text-orange-600", // Chữ màu cam
+        iconBgColor: "bg-orange-100",
+        bgColor: "bg-orange-50" // THÊM DÒNG NÀY: Nền cam nhạt
+    },
+];
 
+const CESMetricsPanel = () => {
     return (
-        <div className={`metric-card p-6 rounded-xl ${highlight ? 'highlight' : ''}`}>
-            <div className="flex items-center justify-between">
-                <div>
-                    <p className="text-sm font-medium text-gray-600">{title}</p>
-                    <p className={`text-3xl font-bold ${colorClasses[color]?.text || 'text-gray-900'}`}>{value}</p>
-                    <p className={`text-sm ${isIncrease ? 'text-green-600' : 'text-red-600'} flex items-center mt-1`}>
-                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                           {isIncrease ? (
-                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 11l5-5m0 0l5 5m-5-5v12"></path>
-                           ) : (
-                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 13l-5 5m0 0l-5-5m5 5V6"></path>
-                           )}
-                        </svg>
-                        {change}
-                    </p>
-                </div>
-                <div className={`w-12 h-12 ${colorClasses[color]?.bg || 'bg-gray-100'} rounded-full flex items-center justify-center`}>
-                    <span className="text-2xl">{icon}</span>
-                </div>
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {metricsData.map((metric, index) => (
+                <MetricCard key={index} {...metric} />
+            ))}
         </div>
     );
 };
 
-export default MetricCard;
+export default CESMetricsPanel;

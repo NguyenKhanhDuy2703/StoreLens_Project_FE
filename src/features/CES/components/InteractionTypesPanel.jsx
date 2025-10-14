@@ -4,57 +4,79 @@ import { Doughnut } from 'react-chartjs-2';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-// Dữ liệu và cấu hình cho biểu đồ
 const chartData = {
-  datasets: [{
-    data: [51.2, 31.3, 17.5],
-    backgroundColor: ['#3b82f6', '#10b981', '#f97316'],
-    borderWidth: 0,
-    cutout: '70%',
-  }],
-};
-const chartOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: { legend: { display: false } },
+    datasets: [{
+        // Cập nhật màu sắc để khớp với hình ảnh: Xanh dương, Cam, Xanh lá, Tím
+        data: [3200, 2450, 1900, 974], // Đã cập nhật data cho khớp với tổng số lượt nhìn trong hình
+        backgroundColor: ['#2563EB', '#F97316', '#10B981', '#A855F7'], // Blue, Orange, Green, Purple
+        borderWidth: 0,
+        cutout: '70%',
+    }],
 };
 
-// Dữ liệu cho danh sách chi tiết
-const interactionDetails = [
-    { type: "Chạm nhẹ", description: "Khách hàng chạm vào sản phẩm", value: "1,456", percentage: "51.2%", color: "blue" },
-    { type: "Cầm lên", description: "Khách hàng cầm sản phẩm lên", value: "892", percentage: "31.3%", color: "green" },
-    { type: "Đặt lại", description: "Khách hàng đặt sản phẩm lại", value: "499", percentage: "17.5%", color: "orange" },
+const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+};
+
+// Cập nhật dữ liệu gazeTypes với màu nền, màu chữ và icon tương ứng
+const gazeTypes = [
+    { type: "Nhìn lướt", description: "Thoáng qua, rồi đi tiếp", value: "3,200", percentage: "38%", color: "blue", bgColor: "bg-blue-50", textColor: "text-blue-600", dotColor: "bg-blue-500" }, // Màu xanh dương
+    { type: "Nhìn ngắn", description: "Nhìn ≤ 5 giây", value: "2,450", percentage: "29%", color: "green", bgColor: "bg-green-50", textColor: "text-green-600", dotColor: "bg-green-500" }, // Màu xanh lá cây
+    { type: "Nhìn lâu", description: "Nhìn > 5 giây, quan tâm cao", value: "1,900", percentage: "22%", color: "orange", bgColor: "bg-orange-50", textColor: "text-orange-600", dotColor: "bg-orange-500" }, // Màu cam
+    { type: "Tập trung", description: "Nhìn chăm chú 1 sản phẩm", value: "974", percentage: "11%", color: "purple", bgColor: "bg-purple-50", textColor: "text-purple-600", dotColor: "bg-purple-500" }, // Màu tím
 ];
 
 const InteractionTypesPanel = () => {
     return (
-        <div className="bg-white rounded-xl shadow-sm border p-6">
-            <div className="flex items-center justify-between mb-6">
+        <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900 flex items-center space-x-2">
-                    <span className="text-2xl">🎯</span>
-                    <span>Loại tương tác</span>
+                    <span className="w-5 h-5 flex items-center justify-center bg-gray-100 rounded-md text-sm">📊</span> {/* Thêm icon nhỏ */}
+                    <span>Loại hướng nhìn</span>
                 </h3>
+                <button className="text-blue-600 hover:text-blue-700 text-sm font-medium">Chi tiết</button>
             </div>
             
-            <div className="relative h-48 mb-6">
+            <div className="relative h-48 mb-4">
                 <Doughnut data={chartData} options={chartOptions} />
             </div>
             
-            <div className="space-y-4">
-                {interactionDetails.map(item => (
-                    <div key={item.type} className={`flex items-center justify-between p-3 bg-${item.color}-50 rounded-lg`}>
+            <div className="space-y-3 mb-4">
+                {gazeTypes.map(item => (
+                    // Áp dụng màu nền (bgColor), bo góc và padding cho mỗi item
+                    <div key={item.type} className={`flex items-center justify-between p-3 rounded-lg ${item.bgColor}`}>
                         <div className="flex items-center space-x-3">
-                            <div className={`w-4 h-4 bg-${item.color}-500 rounded-full`}></div>
+                            {/* Sử dụng dotColor cho chấm tròn */}
+                            <div className={`w-3 h-3 ${item.dotColor} rounded-full`}></div>
                             <div>
-                                <p className="font-medium text-gray-900">{item.type}</p>
+                                <p className="font-medium text-gray-800">{item.type}</p>
+                                <p className="text-xs text-gray-500">{item.description}</p>
                             </div>
                         </div>
                         <div className="text-right">
-                            <p className={`font-bold text-${item.color}-600`}>{item.value}</p>
+                            {/* Sử dụng textColor cho giá trị số */}
+                            <p className={`font-bold ${item.textColor}`}>{item.value}</p>
                             <p className="text-xs text-gray-500">{item.percentage}</p>
                         </div>
                     </div>
                 ))}
+            </div>
+            
+            {/* Cập nhật phần Thông tin chi tiết */}
+            <div className="bg-purple-50 text-purple-800 p-4 rounded-lg text-sm flex flex-col space-y-3">
+                <div className="flex items-center space-x-3">
+                    <span className="text-xl">💡</span> {/* Icon bóng đèn */}
+                    <p className="font-semibold text-gray-900">Thông tin chi tiết</p> {/* Tiêu đề màu đen, in đậm */}
+                </div>
+                
+                <ul className="list-disc list-inside space-y-1 text-xs text-purple-700"> {/* Danh sách màu tím */}
+                    <li>65% khách nhìn lâu (&gt;5s) có xu hướng dừng lại</li>
+                    <li>40% khách tập trung nhìn sẽ tiến tới khu vực đó</li>
+                    <li>Thời gian nhìn TB toàn cửa hàng: 6.8s</li>
+                    <li>Vị trí hot nhất: Kệ đồ uống tầng 1</li>
+                </ul>
             </div>
         </div>
     );
