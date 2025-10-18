@@ -6,16 +6,9 @@ import Heatmap from "../features/Heatmap/Heatmap";
 import Downtime from "../features/Downtime/Downtime";
 import ROI from "../features/ROI/ROI";
 import CES from "../features/CES/CES";
-import Map from "../features/Map/Map";
+import CameraZoneManager from "../features/Map/CameraZoneManager";
 
-// Các component giả lập cho các chức năng chưa code
-const ThoiGianDung = () => <div className="p-4">Nội dung chức năng Thời gian dừng</div>;
-const VungQuanTam = () => <div className="p-4">Nội dung chức năng Vùng quan tâm</div>;
-const DiemTuongTac = () => <div className="p-4">Nội dung chức năng Điểm tương tác</div>;
-
-const AppRouter = ({ isLoggedIn }) => {
-  if (!isLoggedIn) return null;
-
+const AppRouter = () => {
   return (
     <Routes>
       <Route path="/" element={<MainLayout />}>
@@ -25,7 +18,7 @@ const AppRouter = ({ isLoggedIn }) => {
         <Route path="thoi-gian-dung" element={<Downtime />} />
         <Route path="vung-quan-tam" element={<ROI />} />
         <Route path="diem-tuong-tac" element={<CES />} />
-        <Route path="map" element={<Map />} />
+        <Route path="quan-ly-cameras" element={<CameraZoneManager />} />
       </Route>
     </Routes>
   );

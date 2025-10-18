@@ -1,63 +1,77 @@
-import React from 'react';
-
-
-// SVG cho logo, bạn có thể thay bằng file ảnh của mình
-const LogoIcon = () => (
-  <svg className="h-8 w-8 text-white" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.09 14.41L12 15.67l1.09.74c.26.18.59.08.75-.19.16-.27.06-.61-.2-.78l-1.64-1.1V9.5c0-.32-.26-.58-.58-.58s-.58.26-.58.58v4.84l-1.64 1.1c-.26.17-.36.51-.2.78.16.27.49.37.75.19z"/>
-  </svg>
-);
-
+import Navbar from "./Navbar";
 
 const Header = () => {
   return (
-    <header className="bg-white shadow-sm w-full sticky top-0 z-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          
-          {/* Phần bên trái: Logo */}
-          <div className="flex items-center space-x-3">
-            <div className="flex-shrink-0 bg-purple-600 p-1.5 rounded-lg">
-              <LogoIcon />
+    <header className=" w-full bg-white border-b border-gray-200 sticky top-0 z-20">
+      <div className=" mx-auto px-6">
+        <div className="flex items-center justify-between h-16 gap-4">
+          {/* Logo */}
+          <div className="flex items-center space-x-3 flex-shrink-0">
+            <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-2 rounded-lg shadow-sm">
+              <svg
+                className="h-6 w-6 text-white"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.09 14.41L12 15.67l1.09.74c.26.18.59.08.75-.19.16-.27.06-.61-.2-.78l-1.64-1.1V9.5c0-.32-.26-.58-.58-.58s-.58.26-.58.58v4.84l-1.64 1.1c-.26.17-.36.51-.2.78.16.27.49.37.75.19z" />
+              </svg>
             </div>
-            <span className="text-2xl font-bold text-gray-800 tracking-tight">StoreLens</span>
+            <span className="text-lg font-bold text-gray-900">StoreLens</span>
           </div>
 
-          {/* Phần giữa: Ô tìm kiếm */}
-          <div className="flex-1 flex justify-center px-2 lg:ml-6 lg:justify-end">
-            <div className="max-w-md w-full lg:max-w-xs">
-              <label htmlFor="search" className="sr-only">Search</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  
-                </div>
-                <input
-                  id="search"
-                  name="search"
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
-                  placeholder="Type to search..."
-                  type="search"
+          <Navbar />
+          {/* Search */}
+          <div className="flex-1 max-w-md relative">
+            <svg
+              className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+            <input
+              type="search"
+              className="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-sm bg-gray-50 placeholder-gray-500 focus:outline-none focus:bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+              placeholder="Type to search..."
+            />
+          </div>
+
+          {/* Right Actions */}
+          <div className="flex items-center space-x-4 flex-shrink-0">
+            <button className="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
+              <svg
+                className="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
                 />
-              </div>
-            </div>
-          </div>
+              </svg>
+              <span className="absolute top-1.5 right-1 h-2.5 w-2.5 bg-red-500 rounded-full animate-pulse"></span>
+            </button>
 
-          {/* Phần bên phải: Thông báo & Admin */}
-          <div className="flex items-center space-x-4">
-            <div className="relative cursor-pointer p-1">
-              
-              <span className="absolute top-1 right-1 flex h-2 w-2">
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-              </span>
-            </div>
-            <div className="flex items-center space-x-3 cursor-pointer">
-              <div className="h-9 w-9 rounded-full bg-purple-500 flex items-center justify-center text-white font-bold text-sm">
+            <div className="w-px h-6 bg-gray-200"></div>
+
+            <div className="flex items-center space-x-2.5 cursor-pointer hover:opacity-75 transition-opacity">
+              <div className="h-8 w-8 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center text-white font-semibold text-sm shadow-sm">
                 A
               </div>
-              <span className="font-semibold text-gray-700 hidden md:block">Admin</span>
+              <span className="font-medium text-gray-700 text-sm hidden sm:block">
+                Admin
+              </span>
             </div>
           </div>
-          
         </div>
       </div>
     </header>
