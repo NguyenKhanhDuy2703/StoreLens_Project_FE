@@ -4,14 +4,14 @@ import StatsBox from './StatsBox';
 
 const Header = ({ onAddCameraClick, totalCameras, activeCameras }) => {
   return (
-    <div className="bg-gradient-to-r from-purple-600 to-indigo-700 p-6 shadow-lg">
+    <div className="bg-white  p-6 shadow-lg">
       <div className="container mx-auto flex justify-between items-center">
         <div className="flex items-center gap-4">
           <div className="bg-white/90 p-3 rounded-lg">
             <Video className="h-8 w-8 text-indigo-700" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-white">Quản Lý Camera</h1>
+            <h1 className="text-3xl font-bold text-black ">Quản Lý Camera</h1>
             <p className="text-indigo-200">Hệ thống giám sát thông minh</p>
           </div>
         </div>
