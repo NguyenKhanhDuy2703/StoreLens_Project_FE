@@ -1,14 +1,24 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import AppRouter from "./routes";
-import {Provider} from "react-redux"
+import { BrowserRouter } from "react-router-dom";
+import { Provider } from "react-redux";
 import store from "./redux/store";
+import { useState } from "react";
+
+import Authentication from "./features/Authentication/Authentication";
+import AppRouter from "./routes";
+
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   return (
-    <BrowserRouter>
     <Provider store={store}>
-      <AppRouter />
+      <BrowserRouter>
+        {!isLoggedIn ? (
+          <Authentication onLogin={() => setIsLoggedIn(true)} />
+        ) : (
+          <AppRouter isLoggedIn={isLoggedIn} />
+        )}
+      </BrowserRouter>
     </Provider>
-    </BrowserRouter>
   );
 }
 
