@@ -7,10 +7,17 @@ import Downtime from "../features/Downtime/Downtime";
 import ROI from "../features/ROI/ROI";
 import CES from "../features/CES/CES";
 import CameraZoneManager from "../features/Map/CameraZoneManager";
+import AuthenticationLayout from "../layouts/authenticationLayout";
+import SignInForm from "../features/Authentication/SignInForm";
+
+
 
 const AppRouter = () => {
   return (
     <Routes>
+      <Route path="/auth" element={<AuthenticationLayout />} >
+        <Route path="login" element= {<SignInForm />} />
+      </Route>
       <Route path="/" element={<MainLayout />}>
         <Route index element={<Dashboard />} />
         <Route path="movement-flow" element={<MovementFlow />} />
