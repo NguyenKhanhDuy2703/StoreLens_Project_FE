@@ -3,20 +3,14 @@ import Navbar from "./Navbar";
 const Header = () => {
   return (
     <header className=" w-full bg-white border-b border-gray-200 sticky top-0 z-20">
-      <div className=" mx-auto px-6">
+      <div className=" mx-auto px-8">
         <div className="flex items-center justify-between h-16 gap-4">
           {/* Logo */}
-          <div className="flex items-center space-x-3 flex-shrink-0">
-            <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-2 rounded-lg shadow-sm">
-              <svg
-                className="h-6 w-6 text-white"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.09 14.41L12 15.67l1.09.74c.26.18.59.08.75-.19.16-.27.06-.61-.2-.78l-1.64-1.1V9.5c0-.32-.26-.58-.58-.58s-.58.26-.58.58v4.84l-1.64 1.1c-.26.17-.36.51-.2.78.16.27.49.37.75.19z" />
-              </svg>
+          <div className="flex items-center space-x-3 flex-shrink-0 ">
+            <div className="">
+              <img src="/src/assets/logo.png" alt="StoreLens Logo" className="w-32 h-32 " />
             </div>
-            <span className="text-lg font-bold text-gray-900">StoreLens</span>
+           
           </div>
 
           <Navbar />
