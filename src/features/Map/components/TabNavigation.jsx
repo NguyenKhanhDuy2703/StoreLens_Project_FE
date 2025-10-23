@@ -1,5 +1,4 @@
 import { BarChart3, Camera } from "lucide-react";
-
 const TabNavigation = ({ activeTab, onTabChange }) => (
   <div className="bg-white rounded-lg shadow-sm mb-6">
     <div className="flex border-b">

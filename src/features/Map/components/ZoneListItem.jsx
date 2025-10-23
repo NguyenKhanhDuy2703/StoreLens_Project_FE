@@ -1,24 +1,24 @@
-import { Edit2, Eye, Trash2 } from "lucide-react";
+import { Edit2, Eye, EyeOff, Trash2 } from "lucide-react";
 
-const ZoneListItem = ({ zone, onToggleVisibility, onEdit, onDelete }) => (
+const ZoneListItem = ({ zone, onToggleVisibility, onEdit, onDelete }) => {
+  return  (
   <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border hover:border-purple-300 transition-all">
     <div className="flex items-center space-x-3 flex-1">
       <div
         className="w-4 h-4 rounded flex-shrink-0"
-        style={{ backgroundColor: zone.labelColor }}
+        style={{ backgroundColor: zone?.labelColor }}
       />
       <div className="flex-1 min-w-0">
-        <p className="font-medium truncate">{zone.name}</p>
-        <p className="text-xs text-gray-600 truncate">{zone.labelName}</p>
+        <p className="text-xs text-gray-600 truncate">{zone?.labelName}</p>
       </div>
     </div>
     <div className="flex items-center space-x-1">
       <button
         onClick={onToggleVisibility}
         className="text-gray-600 hover:bg-gray-200 p-2 rounded"
-        title={zone.visible ? 'Ẩn zone' : 'Hiện zone'}
+        title={zone?.visible ? 'Ẩn zone' : 'Hiện zone'}
       >
-        {zone.visible ? <Eye size={16} /> : <EyeOff size={16} />}
+        {zone?.visible ? <Eye size={16} /> : <EyeOff size={16} />}
       </button>
       <button
         onClick={onEdit}
@@ -41,4 +41,5 @@ const ZoneListItem = ({ zone, onToggleVisibility, onEdit, onDelete }) => (
     </div>
   </div>
 );
+}
 export default ZoneListItem;
