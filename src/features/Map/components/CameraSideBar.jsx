@@ -1,8 +1,10 @@
 import { Plus } from "lucide-react";
 import CameraListItem from "./CameraListItem";
 
-const CameraSidebar = ({ cameras, selectedCamera, onSelectCamera, onAddCamera, onDeleteCamera }) => (
-  <div className="bg-white rounded-lg shadow-sm p-4">
+const CameraSidebar = ({ cameras = [], selectedCamera, onSelectCamera, onAddCamera, onDeleteCamera }) => 
+{
+   return (
+   <div className="bg-white rounded-lg shadow-sm p-4">
     <div className="flex justify-between items-center mb-4">
       <h2 className="text-lg font-semibold">Danh sách camera</h2>
       <button
@@ -24,5 +26,7 @@ const CameraSidebar = ({ cameras, selectedCamera, onSelectCamera, onAddCamera, o
       ))}
     </div>
   </div>
-);
+ )
+}
+
 export default CameraSidebar;
