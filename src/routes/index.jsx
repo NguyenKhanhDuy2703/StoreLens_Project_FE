@@ -9,12 +9,12 @@ import CES from "../features/CES/CES";
 import CameraZoneManager from "../features/Map/CameraZoneManager";
 import AuthenticationLayout from "../layouts/authenticationLayout";
 import SignInForm from "../features/Authentication/SignInForm";
-
-
+import CameraManagement from "../features/CameraManagement/CameraManagement";
 
 const AppRouter = () => {
   return (
     <Routes>
+
       <Route path="/auth" element={<AuthenticationLayout />} >
         <Route path="login" element= {<SignInForm />} />
       </Route>
@@ -26,7 +26,9 @@ const AppRouter = () => {
         <Route path="vung-quan-tam" element={<ROI />} />
         <Route path="diem-tuong-tac" element={<CES />} />
         <Route path="quan-ly-cameras" element={<CameraZoneManager />} />
+        <Route path="camera-management" element={<CameraManagement />} />
       </Route>
+
     </Routes>
   );
 };
