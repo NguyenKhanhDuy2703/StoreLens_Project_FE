@@ -3,10 +3,10 @@ import { NavLink } from 'react-router-dom';
 
 const navItems = [
   { id: 'tl', label: 'Thống kê', path: '/' },
-  { id: 'lm', label: 'Luồng di chuyển', path: '/movement-flow' },
+  // { id: 'lm', label: 'Luồng di chuyển', path: '/movement-flow' },
   { id: 'hm', label: 'Heatmap', path: '/heatmap' },
   { id: 'td', label: 'Thời gian', path: '/thoi-gian-dung' },
-  { id: 'roi', label: 'Vùng quan tâm', path: '/vung-quan-tam' },
+  // { id: 'roi', label: 'Vùng quan tâm', path: '/vung-quan-tam' },
   { id: 'ces', label: 'Tương tác', path: '/diem-tuong-tac' },
   { id: 'quản lý camera', label: 'Quản lý camera', path: '/quan-ly-cameras' },
 ];
