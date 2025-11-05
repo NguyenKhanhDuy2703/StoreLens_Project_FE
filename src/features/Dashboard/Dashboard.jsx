@@ -1,122 +1,120 @@
-import { useState, useEffect } from 'react';
-import { Users, TrendingUp, ShoppingCart, Clock, RefreshCw} from 'lucide-react';
-import ZoneDetails from './components/ZoneDetails';
-import TrafficFlowChart from './components/TrafficFlowChart';
-import TopProductsTable from './components/TopProductsTable';
-import MetricCard from './components/MetricCard';
-import StatusItem from './components/StatusItem';
+import {
+  TrendingUp,
+  Users,
+  DollarSign,
+  ShoppingCart,
+  Clock,
+} from "lucide-react";
+import KPICard from "./components/KPICard";
+import StatusBar from "./components/StatusBar";
+import TrafficChart from "./components/TrafficChart";
+import TopProducts from "./components/TopProducts";
+import ZonePerformanceTable from "./components/ZonePerformanceTable";
+import { useEffect, useState } from "react";
 
-// Main Dashboard Component
+
+import { useDispatch, useSelector } from "react-redux";////
+import { fecthGetStatusMetrics, fetchGetChartData  , fetchGetTopProducts} from "./dashboardSlice";/////
+
+
+// Trang tổng quan chính
 const StoreLensDashboard = () => {
-  
+  const [storeId, setStoreId] = useState("STORE001");
+  const [range, setRange] = useState("today");
+  const [zoneId, setZoneId] = useState("Z01");
+  const [cameraCode, setCameraCode] = useState("C01");
+  const dispatch = useDispatch();
+  const {
+    totalVisitors,
+    totalSales,
+    conversionRate,
+    avgOrderValue,
+    avgSessionDuration,
+    customerCurrent,
+    checkoutLength,
+    peakHours,
+    isLoading,
+  } = useSelector((state) => state.dashboard.metrics);
+  const dataCharts = useSelector((state) => state.dashboard.trafficData);
+  const dataProducts = useSelector((state) => state.dashboard.topProducts);
 
-  // Simulated data - in real app, fetch from API
-  const metrics = {
-    visitorsIn: { value: 1256, change: 12, trend: 'up' },
-    visitorsOut: { value: 1189, change: 8, trend: 'up' },
-    inStore: { value: 67, status: 'normal' },
-    avgDwellTime: { value: '24m', change: 3, trend: 'up' },
-    conversionRate: { value: '18.5%', change: 2.3, trend: 'up' },
-    avgBasketSize: { value: '₫245k', change: 5.2, trend: 'up' },
-    peakHour: { value: '18:00-19:00', capacity: '85%' },
-    checkoutQueue: { value: 3, avgWait: '4m' }
-  };
-
+  useEffect(() => {
+    (async () => {
+      dispatch(fecthGetStatusMetrics({ storeId, range, zoneId, cameraCode }));
+      dispatch(fetchGetChartData({ storeId, range, zoneId, cameraCode }))
+      dispatch(fetchGetTopProducts({ storeId, range, zoneId, cameraCode }))
+    })();
+  }, [storeId, range, dispatch]);
+ 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-32 w-32"></div>
+      </div>
+    );
+  }
+ 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-    
-      {/* Key Metrics Grid */}
-      <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <MetricCard
-          icon={<Users className="h-6 w-6 text-green-600" />}
-          title="Khách vào hôm nay"
-          value={metrics.visitorsIn.value.toLocaleString()}
-          change={`+${metrics.visitorsIn.change}%`}
-          trend="up"
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
+      {/* Thẻ KPI */}
+      <div className="grid grid-cols-5 gap-5 mb-8">
+        <KPICard
+          title="Tổng khách ghé thăm"
+          value={totalVisitors}
           subtitle="so với hôm qua"
-          color="green"
-        />
-        
-        <MetricCard
-          icon={<TrendingUp className="h-6 w-6 text-blue-600" />}
-          title="Tỷ lệ chuyển đổi"
-          value={metrics.conversionRate.value}
-          change={`+${metrics.conversionRate.change}%`}
           trend="up"
-          subtitle="khách mua/tổng khách"
+          trendValue="+12%"
+          icon={Users}
           color="blue"
         />
-        
-        <MetricCard
-          icon={<ShoppingCart className="h-6 w-6 text-purple-600" />}
-          title="Giá trị giỏ hàng TB"
-          value={metrics.avgBasketSize.value}
-          change={`+${metrics.avgBasketSize.change}%`}
-          trend="up"
+        <KPICard
+          title="Tổng doanh thu"
+          value={totalSales}
           subtitle="so với hôm qua"
+          trend="up"
+          trendValue="+5.2%"
+          icon={DollarSign}
+          color="green"
+        />
+        <KPICard
+          title="Tỷ lệ chuyển đổi"
+          value={`${conversionRate}%`}
+          subtitle="khách hàng mua hàng"
+          trend="up"
+          trendValue="+2.3%"
+          icon={ShoppingCart}
           color="purple"
         />
-        
-        <MetricCard
-          icon={<Clock className="h-6 w-6 text-orange-600" />}
-          title="Thời gian lưu trú TB"
-          value={metrics.avgDwellTime.value}
-          change={`+${metrics.avgDwellTime.change}m`}
+        <KPICard
+          title="Giá trị đơn hàng TB"
+          value={avgOrderValue.toFixed(2)}
+          subtitle="mỗi giao dịch"
           trend="up"
-          subtitle="so với hôm qua"
+          trendValue="+8.1%"
+          icon={TrendingUp}
           color="orange"
         />
+        <KPICard
+          title="Thời gian ở lại TB"
+          value={`${avgSessionDuration}p`}
+          subtitle="so với hôm qua"
+          trend="up"
+          trendValue="+3p"
+          icon={Clock}
+          color="pink"
+        />
       </div>
-
-      {/* Real-time Status Bar */}
-      <div className="mb-6 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 p-4 text-white shadow-lg">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-          <StatusItem 
-            label="Khách trong cửa hàng"
-            value={metrics.inStore.value}
-            status={metrics.inStore.status}
-          />
-          <StatusItem 
-            label="Hàng đợi thanh toán"
-            value={`${metrics.checkoutQueue.value} người`}
-            status={metrics.checkoutQueue.value > 5 ? 'warning' : 'normal'}
-            detail={`Chờ TB: ${metrics.checkoutQueue.avgWait}`}
-          />
-          <StatusItem 
-            label="Giờ cao điểm"
-            value={metrics.peakHour.value}
-            status="info"
-            detail={`Công suất: ${metrics.peakHour.capacity}`}
-          />
-          <StatusItem 
-           label="Cảnh báo"
-            value="Khu mỹ phẩm"
-            status="warning"
-            detail="Khách đông, cần hỗ trợ"
-            />
-        </div>
+      <div className="mb-8">
+        <StatusBar customerCurrent = {customerCurrent}   checkoutLength = {checkoutLength} peakHours={peakHours}/>
       </div>
-
-      {/* Main Content Grid */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        {/* Traffic Flow Chart & Products Table */}
-        <div className="space-y-6 lg:col-span-2">
-          <TrafficFlowChart />
-          <TopProductsTable />
-        </div>
-        
-        {/* Zone Details */}
-        <div>
-          <ZoneDetails />
-        </div>
+      <div className="grid grid-cols-2 gap-6 mb-8">
+        <TrafficChart dataCharts = {dataCharts} />
+        <TopProducts  dataProducts = {dataProducts} />
       </div>
+      <ZonePerformanceTable />
     </div>
   );
 };
 
-
-
-
-
-
 export default StoreLensDashboard;
+
