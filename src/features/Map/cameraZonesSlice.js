@@ -5,7 +5,6 @@ export const fetchCameraWithZones = createAsyncThunk(
   async (type, thunkAPI) => {
     try {
       const response = await getListCamerasWithZones({ type });
-      console.log("Fetched cameras with zones:", response);
       return response;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
