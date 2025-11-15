@@ -17,11 +17,11 @@ const CameraSidebar = ({ cameras = [], selectedCamera, onSelectCamera, onAddCame
     <div className="space-y-2 max-h-[calc(100vh-300px)] overflow-y-auto">
       {cameras.map(cam => (
         <CameraListItem
-          key={cam.id}
+          key={cam.cameraCode}
           camera={cam}
-          isSelected={selectedCamera?.id === cam.id}
-          onSelect={() => onSelectCamera(cam)}
-          onDelete={() => onDeleteCamera(cam.id)}
+          isSelected={selectedCamera?.cameraCode === cam.cameraCode}
+          onSelect={() => onSelectCamera(cam.zones)}
+          onDelete={() => onDeleteCamera(cam.cameraCode)}
         />
       ))}
     </div>
