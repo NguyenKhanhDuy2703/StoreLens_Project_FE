@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 const TrafficChart = ({ dataCharts }) => {
   const [chartData, setChartData] = useState({ traffic: [], sales: [] });
-
+  
   useEffect(() => {
     if (dataCharts?.chart_data && Array.isArray(dataCharts.chart_data)) {
       const traffic = dataCharts.chart_data.map(item => ({
@@ -18,13 +18,10 @@ const TrafficChart = ({ dataCharts }) => {
       setChartData({ traffic, sales });
       console.log("chartData set in TrafficChart", { traffic, sales });
     }
-  
   }, [dataCharts]);
 
-  // Tạo labels từ dữ liệu thực tế
   const hours = chartData.traffic.map(item => `${item.hour}h`);
   
-  // Tính toán scale cho biểu đồ
   const maxTraffic = chartData.traffic.length > 0 
     ? Math.max(...chartData.traffic.map(d => d.value), 10)
     : 100;
@@ -32,8 +29,8 @@ const TrafficChart = ({ dataCharts }) => {
     ? Math.max(...chartData.sales.map(d => d.value), 10000)
     : 1000000;
   
-  const getY = (value, max, height = 180) => {
-    return 200 - (value / max) * height;
+  const getY = (value, max, height = 200) => {
+    return 220 - (value / max) * height;
   };
 
   const formatCurrency = (value) => {
@@ -46,7 +43,6 @@ const TrafficChart = ({ dataCharts }) => {
     return value.toString();
   };
 
-  // Tạo points cho polyline - điều chỉnh spacing dựa trên số lượng data points
   const getSpacing = () => {
     const totalWidth = 700;
     const numPoints = chartData.traffic.length;
@@ -68,56 +64,90 @@ const TrafficChart = ({ dataCharts }) => {
   }).join(' ');
 
   return (
-    <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-lg">
-      <div className="flex items-center justify-between mb-6">
+    <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+      {/* Header */}
+      <div className="flex items-start justify-between mb-8">
         <div>
-          <h3 className="text-lg font-bold text-gray-900">
+          <h3 className="text-xl font-bold text-gray-800 mb-1.5">
             Lưu lượng & Doanh số theo giờ
           </h3>
-          <p className="text-sm text-gray-500 mt-1">Phân tích xu hướng trong ngày</p>
+          <p className="text-sm text-gray-500">Phân tích xu hướng trong ngày</p>
         </div>
-        <div className="flex gap-5 text-sm">
-          <div className="flex items-center">
-            <div className="w-3 h-3 rounded-full bg-gradient-to-r from-green-400 to-green-600 mr-2 shadow-sm"></div>
-            <span className="text-gray-600 font-medium">Lưu lượng (người)</span>
+        
+        <div className="flex gap-6 bg-gray-50 rounded-xl px-5 py-3 border border-gray-100">
+          <div className="flex items-center gap-2.5">
+            <div className="w-3 h-3 rounded-full bg-green-500 ring-2 ring-green-100"></div>
+            <span className="text-sm font-medium text-gray-700">Lưu lượng</span>
           </div>
-          <div className="flex items-center">
-            <div className="w-3 h-3 rounded-full bg-gradient-to-r from-blue-400 to-blue-600 mr-2 shadow-sm"></div>
-            <span className="text-gray-600 font-medium">Doanh số (VNĐ)</span>
+          <div className="flex items-center gap-2.5">
+            <div className="w-3 h-3 rounded-full bg-blue-500 ring-2 ring-blue-100"></div>
+            <span className="text-sm font-medium text-gray-700">Doanh số</span>
           </div>
         </div>
       </div>
 
-      <div className="relative h-64">
-        <svg className="w-full h-full" viewBox="0 0 800 240">
+      {/* Chart */}
+      <div className="relative bg-gradient-to-b from-gray-50/50 to-white rounded-xl p-6">
+        <svg className="w-full" viewBox="0 0 800 280" style={{ height: '400px' }}>
           <defs>
             <linearGradient id="greenGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#22c55e" stopOpacity="0.3" />
+              <stop offset="0%" stopColor="#22c55e" stopOpacity="0.15" />
               <stop offset="100%" stopColor="#22c55e" stopOpacity="0" />
             </linearGradient>
             <linearGradient id="blueGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.3" />
+              <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.15" />
               <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
             </linearGradient>
+            <filter id="shadow">
+              <feDropShadow dx="0" dy="2" stdDeviation="3" floodOpacity="0.1"/>
+            </filter>
           </defs>
           
-          {[0, 1, 2, 3, 4].map((i) => (
-            <line
-              key={i}
-              x1="50"
-              y1={20 + i * 45}
-              x2="750"
-              y2={20 + i * 45}
-              stroke="#e5e7eb"
-              strokeWidth="1"
-              strokeDasharray="3,3"
-            />
-          ))}
+          {/* Grid lines with Y-axis labels */}
+          {[0, 1, 2, 3, 4].map((i) => {
+            const yPos = 20 + i * 50;
+            const trafficValue = Math.round(maxTraffic * (1 - i / 4));
+            const salesValue = formatCurrency(maxSales * (1 - i / 4));
+            
+            return (
+              <g key={i}>
+                <line
+                  x1="50"
+                  y1={yPos}
+                  x2="750"
+                  y2={yPos}
+                  stroke="#e2e8f0"
+                  strokeWidth="1"
+                />
+                {/* Traffic labels (left) */}
+                <text
+                  x="35"
+                  y={yPos + 5}
+                  textAnchor="end"
+                  className="text-xs fill-green-600"
+                  style={{ fontSize: '14px', fontWeight: '600' }}
+                >
+                  {trafficValue}
+                </text>
+                {/* Sales labels (right) */}
+                <text
+                  x="765"
+                  y={yPos + 5}
+                  textAnchor="start"
+                  className="text-xs fill-blue-600"
+                  style={{ fontSize: '14px', fontWeight: '600' }}
+                >
+                  {salesValue}
+                </text>
+              </g>
+            );
+          })}
 
+          {/* Traffic data */}
           {chartData.traffic.length > 0 && (
             <>
               <polyline
-                points={`50,200 ${trafficPoints} 750,200`}
+                points={`50,220 ${trafficPoints} 750,220`}
                 fill="url(#greenGradient)"
               />
               <polyline
@@ -125,14 +155,18 @@ const TrafficChart = ({ dataCharts }) => {
                 fill="none"
                 stroke="#22c55e"
                 strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                filter="url(#shadow)"
               />
             </>
           )}
 
+          {/* Sales data */}
           {chartData.sales.length > 0 && (
             <>
               <polyline
-                points={`50,200 ${salesPoints} 750,200`}
+                points={`50,220 ${salesPoints} 750,220`}
                 fill="url(#blueGradient)"
               />
               <polyline
@@ -140,10 +174,14 @@ const TrafficChart = ({ dataCharts }) => {
                 fill="none"
                 stroke="#3b82f6"
                 strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                filter="url(#shadow)"
               />
             </>
           )}
 
+          {/* Data points */}
           {chartData.traffic.map((d, i) => {
             const x = 50 + i * spacing;
             const yTraffic = getY(d.value, maxTraffic);
@@ -154,22 +192,24 @@ const TrafficChart = ({ dataCharts }) => {
                 <circle
                   cx={x}
                   cy={yTraffic}
-                  r="5"
+                  r="6"
                   fill="#22c55e"
                   stroke="#ffffff"
-                  strokeWidth="2.5"
-                  className="drop-shadow-md cursor-pointer"
+                  strokeWidth="3"
+                  filter="url(#shadow)"
+                  className="cursor-pointer transition-all hover:r-8"
                 >
                   <title>{`${d.hour}h: ${d.value} người`}</title>
                 </circle>
                 <circle
                   cx={x}
                   cy={ySales}
-                  r="5"
+                  r="6"
                   fill="#3b82f6"
                   stroke="#ffffff"
-                  strokeWidth="2.5"
-                  className="drop-shadow-md cursor-pointer"
+                  strokeWidth="3"
+                  filter="url(#shadow)"
+                  className="cursor-pointer transition-all hover:r-8"
                 >
                   <title>{`${d.hour}h: ${formatCurrency(chartData.sales[i]?.value || 0)} VNĐ`}</title>
                 </circle>
@@ -178,9 +218,12 @@ const TrafficChart = ({ dataCharts }) => {
           })}
         </svg>
         
-        <div className="flex justify-between mt-4 px-6 text-xs text-gray-500 font-medium">
+        {/* X-axis labels */}
+        <div className="flex justify-between mt-6 px-6">
           {hours.map((hour, idx) => (
-            <span key={idx}>{hour}</span>
+            <div key={idx} className="text-center">
+              <div className="text-sm font-bold text-gray-700">{hour}</div>
+            </div>
           ))}
         </div>
       </div>

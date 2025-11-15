@@ -2,15 +2,7 @@ import {
   TrendingUp,
   TrendingDown,
 } from 'lucide-react';
-const ZonePerformanceTable = () => {
-  const zones = [
-    { name: 'Khu vực cửa vào', traffic: 1256, dwellTime: '24p', revenue: '$245k', conversion: '18.5%', trend: 'up' },
-    { name: 'Khu thực phẩm tươi sống', traffic: 420, dwellTime: '12p', revenue: '$89k', conversion: '22.0%', trend: 'up' },
-    { name: 'Khu mỹ phẩm', traffic: 280, dwellTime: '8p', revenue: '$52k', conversion: '15.0%', trend: 'down' },
-    { name: 'Khu đồ uống', traffic: 380, dwellTime: '6p', revenue: '$76k', conversion: '19.5%', trend: 'up' },
-    { name: 'Khu thanh toán', traffic: 250, dwellTime: '4p', revenue: '$198k', conversion: '85.0%', trend: 'up' },
-  ];
-
+const ZonePerformanceTable = ({zonePerformance}) => {
   return (
     <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-lg">
       <div className="mb-6">
@@ -30,15 +22,15 @@ const ZonePerformanceTable = () => {
             </tr>
           </thead>
           <tbody>
-            {zones.map((zone, index) => (
+            {zonePerformance?.zones.map((zone, index) => (
               <tr key={index} className="border-b border-gray-100 hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50 transition-all duration-200">
-                <td className="py-4 px-4 text-gray-900 font-semibold text-sm">{zone.name}</td>
-                <td className="py-4 px-4 text-gray-700 text-sm font-medium">{zone.traffic.toLocaleString()}</td>
-                <td className="py-4 px-4 text-gray-700 text-sm font-medium">{zone.dwellTime}</td>
-                <td className="py-4 px-4 text-green-600 font-bold text-sm">{zone.revenue}</td>
+                <td className="py-4 px-4 text-gray-900 font-semibold text-sm">{zone.category_name}</td>
+                <td className="py-4 px-4 text-gray-700 text-sm font-medium">{zone.people_count}</td>
+                <td className="py-4 px-4 text-gray-700 text-sm font-medium">{zone.avg_dwell_time}</td>
+                <td className="py-4 px-4 text-green-600 font-bold text-sm">{zone.total_sales_value}</td>
                 <td className="py-4 px-4 bg-gradient-to-r from-blue-50 to-indigo-50">
                   <span className="inline-flex items-center px-3 py-1 rounded-full text-blue-700 font-bold text-sm bg-white shadow-sm">
-                    {zone.conversion}
+                    {zone.conversion_rate}
                   </span>
                 </td>
                 <td className="py-4 px-4 text-center">

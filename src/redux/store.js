@@ -1,10 +1,11 @@
 import {configureStore} from "@reduxjs/toolkit";
 import dashboardReducer  from "../features/Dashboard/dashboardSlice"
-import loginReducer  from "../features/Authentication/signInSlice"
+import cameraZonesReducer from "../features/Map/cameraZonesSlice"
 const store = configureStore({
   reducer: {
     dashboard: dashboardReducer,
-    auth: loginReducer,
+    cameraZones: cameraZonesReducer,
+   
   },
 });
 export default store;

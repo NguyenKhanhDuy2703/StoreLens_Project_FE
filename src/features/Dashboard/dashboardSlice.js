@@ -1,15 +1,19 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getStatusMetrics  , getDataCharts, getTopProducts} from "../../services/dashboard.api";
+import {
+  getStatusMetrics,
+  getDataCharts,
+  getTopProducts,
+  getZonePerformance,
+} from "../../services/dashboard.api";
 export const fecthGetStatusMetrics = createAsyncThunk(
   "dashboard/fetchGetStatusMetrics",
-  async ({ storeId, range, zoneId, cameraCode, thunkAPI }) => {
+  async ({ storeId, range, thunkAPI }) => {
     try {
       const response = await getStatusMetrics({
         storeId,
         range,
-        zoneId,
-        cameraCode,
       });
+
       return response;
     } catch (error) {
       return thunkAPI.rejectWithValue("Failed to fetch status metrics");
@@ -18,13 +22,11 @@ export const fecthGetStatusMetrics = createAsyncThunk(
 );
 export const fetchGetChartData = createAsyncThunk(
   "dashboard/fetchGetChartData",
-  async ({ storeId, range, zoneId, cameraCode, thunkAPI }) => {
+  async ({ storeId, range, thunkAPI }) => {
     try {
       const response = await getDataCharts({
         storeId,
         range,
-        zoneId,
-        cameraCode,
       });
       return response;
     } catch (error) {
@@ -34,37 +36,32 @@ export const fetchGetChartData = createAsyncThunk(
 );
 export const fetchGetTopProducts = createAsyncThunk(
   "dashboard/fetchGetTopProducts",
-  async ({ storeId, range, zoneId, cameraCode, thunkAPI }) => {
+  async ({ storeId, range, thunkAPI }) => {
     try {
       const response = await getTopProducts({
         storeId,
         range,
-        zoneId,
-        cameraCode,
-      })
+      });
       return response;
     } catch (error) {
       return thunkAPI.rejectWithValue("Failed to fetch top products");
     }
   }
-
-)
+);
 export const fetchGetZonePerformance = createAsyncThunk(
   "dashboard/fetchGetZonePerformance",
-  async ({ storeId, range, zoneId, cameraCode, thunkAPI }) => {
+  async ({ storeId, range, thunkAPI }) => {
     try {
       const response = await getZonePerformance({
         storeId,
         range,
-        zoneId,
-        cameraCode,
       });
       return response;
     } catch (error) {
       return thunkAPI.rejectWithValue("Failed to fetch zone performance");
     }
   }
-)
+);
 const dashboardSlice = createSlice({
   name: "dashboard",
   initialState: {
@@ -80,36 +77,47 @@ const dashboardSlice = createSlice({
       isLoading: false,
     },
     range: "",
-    trafficData:[],
-    topProducts: [],
-    isLoading: false,
+    trafficData: {
+      chart_data: [],
+      isLoading: false,
     },
-  reducers: {},///
+    topProducts: {
+      products: [],
+      isLoading: false,
+    },
+    performaceZone: {
+      zones: [],
+
+      isLoading: false,
+    },
+  },
+  reducers: {}, ///
 
   extraReducers: (builder) => {
-      builder.addCase(fecthGetStatusMetrics.pending, (state) => {
+    // handle fecthGetStatusMetrics
+    builder.addCase(fecthGetStatusMetrics.pending, (state) => {
       state.metrics.isLoading = true;
     }),
       builder.addCase(fecthGetStatusMetrics.fulfilled, (state, action) => {
         for (const metric of action.payload.statusMetric) {
           const {
-            people_count,
+            total_visitors,
+            total_revenue,
             total_invoices,
-            total_sales_value,
             conversion_rate,
-            avg_dwell_time,
-            peak_hour,
-            people_current,
-            checkoutLength,
-          } = metric.performance;
-          state.metrics.totalVisitors = people_count;
-          state.metrics.totalSales = total_sales_value;
+            avg_store_dwell_time,
+            avg_basket_value,
+          } = metric.kpis;
+          const { people_current, checkout_length } = metric.realtime;
+          const peak_hours = 10;
+          state.metrics.totalVisitors = total_visitors;
+          state.metrics.totalSales = total_revenue;
           state.metrics.conversionRate = conversion_rate;
-          state.metrics.avgOrderValue = total_sales_value / (total_invoices || 1);
-          state.metrics.avgSessionDuration = avg_dwell_time;
+          state.metrics.avgOrderValue = avg_basket_value;
+          state.metrics.avgSessionDuration = avg_store_dwell_time;
           state.metrics.customerCurrent = people_current;
-          state.metrics.checkoutLength = checkoutLength;
-          state.metrics.peakHours = peak_hour;
+          state.metrics.checkoutLength = checkout_length;
+          state.metrics.peakHours = peak_hours;
         }
         state.range = action.payload.range;
         state.metrics.isLoading = false;
@@ -123,28 +131,47 @@ const dashboardSlice = createSlice({
         state.metrics.isLoading = true;
       }),
       builder.addCase(fetchGetChartData.fulfilled, (state, action) => {
-        state.trafficData = [...action.payload.dataCharts];
+        for (const chartData of action.payload.dataCharts) {
+          state.trafficData.chart_data = [...chartData.chart_data];
+        }
         state.metrics.isLoading = false;
       }),
       builder.addCase(fetchGetChartData.rejected, (state, action) => {
         console.error(action.payload);
         state.metrics.isLoading = false;
       });
-      // handle fetchGetTopProducts
-      builder.addCase(fetchGetTopProducts.pending, (state) => {
-        state.isLoading = true;
-      });
-      builder.addCase(fetchGetTopProducts.fulfilled, (state, action) => {
-        const data =action.payload;
-        for (const product of data){
-          state.topProducts = [...product.top_products];
-        }
-        state.isLoading = false;
-      });
-      builder.addCase(fetchGetTopProducts.rejected, (state, action) => {
-        console.error(action.payload);
-        state.isLoading = false;
-      });
+    // handle fetchGetTopProducts
+    builder.addCase(fetchGetTopProducts.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(fetchGetTopProducts.fulfilled, (state, action) => {
+      const data = action.payload;
+      for (const product of data) {
+        state.topProducts.products = [...product.top_products];
+      }
+      state.isLoading = false;
+    });
+    builder.addCase(fetchGetTopProducts.rejected, (state, action) => {
+      console.error(action.payload);
+      state.isLoading = false;
+    });
+    builder.addCase(fetchGetZonePerformance.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(fetchGetZonePerformance.fulfilled, (state, action) => {
+      const data = action.payload;
+      state.performaceZone.zones = data.map((zones) => ({
+        people_count: zones.performance.people_count,
+        total_sales_value: zones.performance.total_sales_value,
+        conversion_rate: zones.performance.conversion_rate,
+        avg_dwell_time: zones.performance.avg_dwell_time,
+        total_stop_events: zones.performance.total_stop_events,
+        category_name: zones.category_name,
+      }));
+    });
+    builder.addCase(fetchGetZonePerformance.rejected, (state, action) => {
+      state.isLoading = false;
+    });
   },
 });
 export default dashboardSlice.reducer;
