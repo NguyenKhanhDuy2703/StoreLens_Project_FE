@@ -9,9 +9,9 @@ const MainLayout = () => {
       <Header />
       
       <main className="flex-grow w-full mx-auto px-4 sm:px-6 lg:px-8 py-3">
-        <div>
+        {/* <div>
           <Fillter />
-        </div>
+        </div> */}
         <div className="bg-white rounded-lg">
           <Outlet /> 
         </div>

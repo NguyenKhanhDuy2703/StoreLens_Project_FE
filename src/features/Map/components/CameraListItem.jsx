@@ -1,6 +1,7 @@
 import { Camera, Trash2 } from "lucide-react";
 
 const CameraListItem = ({ camera, isSelected, onSelect, onDelete }) => {
+ 
   return (
     <div
       onClick={onSelect}
@@ -13,7 +14,7 @@ const CameraListItem = ({ camera, isSelected, onSelect, onDelete }) => {
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center space-x-2">
           <Camera size={18} className="text-purple-600" />
-          <span className="font-medium">{camera.name}</span>
+          <span className="font-medium">{camera.cameraName}</span>
         </div>
         <button
           onClick={(e) => {
@@ -30,14 +31,14 @@ const CameraListItem = ({ camera, isSelected, onSelect, onDelete }) => {
       <div className="flex items-center justify-between text-xs">
         <span
           className={`px-2 py-0.5 rounded ${
-            camera.image
+            camera?.zones?.background_image
               ? "bg-green-100 text-green-700"
               : "bg-gray-100 text-gray-600"
           }`}
         >
-          {camera.image ? "✓ Có ảnh" : "○ Chưa có ảnh"}
+          {camera?.zones?.background_image ? "✓ Có ảnh" : "○ Chưa có ảnh"}
         </span>
-        <span className="text-gray-600">{camera.zones.length} zones</span>
+        <span className="text-gray-600">{camera.zones.zones.length} zones</span>
       </div>
     </div>
   );

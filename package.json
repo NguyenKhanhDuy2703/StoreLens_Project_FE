@@ -15,6 +15,7 @@
     "@tailwindcss/vite": "^4.0.12",
     "axios": "^1.8.4",
     "chart.js": "^4.5.0",
+    "currency.js": "^2.0.4",
     "install": "^0.13.0",
     "js-cookie": "^3.0.5",
     "konva": "^10.0.2",

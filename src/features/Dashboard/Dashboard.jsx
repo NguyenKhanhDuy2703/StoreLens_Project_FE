@@ -11,18 +11,17 @@ import TrafficChart from "./components/TrafficChart";
 import TopProducts from "./components/TopProducts";
 import ZonePerformanceTable from "./components/ZonePerformanceTable";
 import { useEffect, useState } from "react";
-
-
-import { useDispatch, useSelector } from "react-redux";////
-import { fecthGetStatusMetrics, fetchGetChartData  , fetchGetTopProducts} from "./dashboardSlice";/////
-
-
-// Trang tổng quan chính
+import currency from "currency.js";
+import { useDispatch, useSelector } from "react-redux"; ////
+import {
+  fecthGetStatusMetrics,
+  fetchGetChartData,
+  fetchGetTopProducts,
+  fetchGetZonePerformance,
+} from "./dashboardSlice"; /////
 const StoreLensDashboard = () => {
   const [storeId, setStoreId] = useState("STORE001");
   const [range, setRange] = useState("today");
-  const [zoneId, setZoneId] = useState("Z01");
-  const [cameraCode, setCameraCode] = useState("C01");
   const dispatch = useDispatch();
   const {
     totalVisitors,
@@ -37,15 +36,17 @@ const StoreLensDashboard = () => {
   } = useSelector((state) => state.dashboard.metrics);
   const dataCharts = useSelector((state) => state.dashboard.trafficData);
   const dataProducts = useSelector((state) => state.dashboard.topProducts);
-
+  const zonePerformance = useSelector(
+    (state) => state.dashboard.performaceZone
+  );
   useEffect(() => {
     (async () => {
-      dispatch(fecthGetStatusMetrics({ storeId, range, zoneId, cameraCode }));
-      dispatch(fetchGetChartData({ storeId, range, zoneId, cameraCode }))
-      dispatch(fetchGetTopProducts({ storeId, range, zoneId, cameraCode }))
+      dispatch(fecthGetStatusMetrics({ storeId, range }));
+      dispatch(fetchGetChartData({ storeId, range }));
+      dispatch(fetchGetTopProducts({ storeId, range }));
+      dispatch(fetchGetZonePerformance({ storeId, range }));
     })();
-  }, [storeId, range, dispatch]);
- 
+  }, [storeId, range]);
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -53,7 +54,7 @@ const StoreLensDashboard = () => {
       </div>
     );
   }
- 
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
       {/* Thẻ KPI */}
@@ -69,7 +70,7 @@ const StoreLensDashboard = () => {
         />
         <KPICard
           title="Tổng doanh thu"
-          value={totalSales}
+          value={currency(totalSales, { symbol: '₫', separator: '.', decimal: ',' }).format()}
           subtitle="so với hôm qua"
           trend="up"
           trendValue="+5.2%"
@@ -87,7 +88,7 @@ const StoreLensDashboard = () => {
         />
         <KPICard
           title="Giá trị đơn hàng TB"
-          value={avgOrderValue.toFixed(2)}
+          value={currency(avgOrderValue, { symbol: '₫', separator: '.', decimal: ',' }).format()}
           subtitle="mỗi giao dịch"
           trend="up"
           trendValue="+8.1%"
@@ -105,16 +106,23 @@ const StoreLensDashboard = () => {
         />
       </div>
       <div className="mb-8">
-        <StatusBar customerCurrent = {customerCurrent}   checkoutLength = {checkoutLength} peakHours={peakHours}/>
+        <StatusBar
+          customerCurrent={customerCurrent}
+          checkoutLength={checkoutLength}
+          peakHours={peakHours}
+        />
       </div>
-      <div className="grid grid-cols-2 gap-6 mb-8">
-        <TrafficChart dataCharts = {dataCharts} />
-        <TopProducts  dataProducts = {dataProducts} />
+      <div className="flex flex-col lg:flex-row gap-8 mb-8">
+        <div className="lg:flex-[2]">
+          <TrafficChart dataCharts={dataCharts} />
+        </div>
+        <div className="lg:flex-[1]">
+          <TopProducts dataProducts={dataProducts} />
+        </div>
       </div>
-      <ZonePerformanceTable />
+      <ZonePerformanceTable zonePerformance={zonePerformance} />
     </div>
   );
 };
 
 export default StoreLensDashboard;
-
