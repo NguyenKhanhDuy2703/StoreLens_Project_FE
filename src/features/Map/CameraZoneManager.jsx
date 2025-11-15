@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { Stage, Layer } from "react-konva";
 import { Camera, Upload } from "lucide-react";
 import TabNavigation from "./components/TabNavigation";
@@ -7,17 +7,36 @@ import ZoneForm from "./components/ZoneForm";
 import DashboardCameras from "./components/DashboardCameras";
 import ZonesList from "./components/ZonesList";
 import { KonvaImage, ZoneShape, DrawingPoints } from "./components/toolDrawZone";
-
+import {useSelector , useDispatch} from"react-redux";
+import { fetchCameraWithZones } from "./cameraZonesSlice";
 const CameraZoneManager = () => {
   const [activeTab, setActiveTab] = useState("cameras");
-  const [cameras, setCameras] = useState([{ id: 1, name: "Camera 1", image: null, zones: [] }]);
+  const [cameras, setCameras] = useState([]);
   const [selectedCamera, setSelectedCamera] = useState(null);
   const [drawingPoints, setDrawingPoints] = useState([]);
   const [zoneFormData, setZoneFormData] = useState({ labelName: "", labelColor: "#3B82F6" });
   const [editingZoneId, setEditingZoneId] = useState(null);
   const [showZoneForm, setShowZoneForm] = useState(false);
+  const [metricCameraZones , setMetricCameraZones] = useState({ totalCamera:0, totalZones:0, cameraHaveImage:0, cameraNotSettuped:0});
   const stageRef = useRef(null);
-
+  const dispatch = useDispatch();
+  const cameraZonesState = useSelector((state) => state.cameraZones);
+  useEffect(() => {
+     ( () => {
+        dispatch( fetchCameraWithZones(""));
+     })();
+  }, []);
+  useEffect(() => {
+    if (cameraZonesState.listCameraWithZones.length > 0) {
+      setMetricCameraZones({
+        totalCamera: cameraZonesState.totalCamera,
+        totalZones: cameraZonesState.totalZones,
+        cameraHaveImage: cameraZonesState.cameraHaveImage,
+        cameraNotSettuped: cameraZonesState.cameraNotSettuped,
+      });
+      setCameras(cameraZonesState.listCameraWithZones);
+    }
+  },[cameraZonesState]);
   // --- Upload hình camera ---
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -36,8 +55,10 @@ const CameraZoneManager = () => {
 
   // --- Xử lý click trên ảnh để vẽ zone ---
   const handleStageClick = (e) => {
-    if (!selectedCamera?.image || drawingPoints.length >= 4) return;
+    
+    if (!selectedCamera?.background_image || drawingPoints.length >= 4) return;
     const pos = e.target.getStage().getPointerPosition();
+    console.log(pos);
     const newPoints = [...drawingPoints, pos];
     setDrawingPoints(newPoints);
     if (newPoints.length === 4) setShowZoneForm(true);
@@ -117,7 +138,7 @@ const CameraZoneManager = () => {
     if (selectedCamera?.id === id) setSelectedCamera(null);
   };
 
-  // --- Render ---
+  console.log(selectedCamera)
   return (
     <div className="min-h-screen w-full bg-gray-50 p-4">
       <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
@@ -137,13 +158,15 @@ const CameraZoneManager = () => {
 
           {/* --- Vùng vẽ Zone --- */}
           <div className="col-span-6 bg-white rounded-lg shadow-sm p-4">
-            {selectedCamera ? (
+            {selectedCamera  ? (
               <>
                 <div className="mb-4 flex justify-center gap-2">
-                  <label className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 cursor-pointer inline-flex items-center gap-2">
+                  {!selectedCamera.background_image && (
+                    <label className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 cursor-pointer inline-flex items-center gap-2">
                     <Upload size={18} /> Upload Image
                     <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
                   </label>
+                  )}
 
                   {drawingPoints.length > 0 && (
                     <button onClick={resetZoneForm} className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600">
@@ -153,11 +176,12 @@ const CameraZoneManager = () => {
                 </div>
 
                 <div className="border-2 border-gray-200 rounded-lg overflow-hidden bg-gray-100">
-                  <Stage ref={stageRef} width={800} height={600} onClick={handleStageClick} className="cursor-crosshair mx-auto">
+                  
+                  <Stage ref={stageRef} width={selectedCamera.width_frame} height={selectedCamera.height_frame} onClick={handleStageClick} className="cursor-crosshair mx-auto">
                     <Layer>
-                      {selectedCamera.image && <KonvaImage src={selectedCamera.image} />}
-                      {selectedCamera.zones.map((zone) => <ZoneShape key={zone.id} zone={zone} />)}
-                      <DrawingPoints points={drawingPoints} />
+                      {selectedCamera.background_image && <KonvaImage src={selectedCamera.background_image}  height = {selectedCamera.height_frame}  width ={selectedCamera.width_frame}/>}
+                      {selectedCamera.zones.map((zone) => <ZoneShape key={zone.zone_id} zone={zone} />)}
+                      <DrawingPoints points={drawingPoints.map(p => [p.x , p.y]).flat()} />
                     </Layer>
                   </Stage>
                 </div>
@@ -183,9 +207,9 @@ const CameraZoneManager = () => {
           </div>
 
           {/* --- Danh sách Zone --- */}
-          <div className="col-span-3">
+          <div className="col-span-3  ">
             {selectedCamera && selectedCamera.zones.length > 0 && (
-              <div className="bg-white rounded-lg shadow-sm p-4">
+              <div className="bg-white rounded-lg shadow-sm p-4 ">
                 <h3 className="text-lg font-semibold mb-3 text-gray-700">
                   Danh sách Zone ({selectedCamera.zones.length})
                 </h3>
@@ -196,7 +220,7 @@ const CameraZoneManager = () => {
         </div>
       )}
 
-      {activeTab === "dashboard" && <DashboardCameras cameras={cameras} />}
+      {activeTab === "dashboard" && <DashboardCameras cameras={cameras} metricCameraZones = {metricCameraZones} />}
     </div>
   );
 };
