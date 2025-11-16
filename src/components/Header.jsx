@@ -1,18 +1,27 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, use } from "react";
 import { Search, Bell, User, Settings, Video, UserPlus, LogOut, AlertTriangle, CheckCircle, Info } from "lucide-react";
 import Navbar from "./Navbar";
 import { useNavigate } from "react-router-dom";
-
+import { useDispatch ,useSelector } from "react-redux";
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [userRole, setUserRole] = useState("admin"); // Có thể là "admin" hoặc "user"
+  const [isLoading, setIsLoading] = useState(false);
+  const [ nameAccount , setAccountUser] = useState("");
   const menuRef = useRef(null);
   const notificationRef = useRef(null);
   const useNagative = useNavigate()
   const handleLogout = () => {
     useNagative('/auth/signin')
   }
+//   const user = useSelector((state) => state.authen);
+//   console.log("Header user info:", user);
+//  useEffect (() => {
+//     setIsLoading(user.isLoading);
+//     setUserRole(user.user?.role || "user")
+//     setAccountUser(user.user?.account || "NAN")
+//  })
   // Dữ liệu thông báo mẫu
   const [notifications, setNotifications] = useState([
     {
@@ -209,7 +218,7 @@ const Header = () => {
                 <div className="h-8 w-8 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center text-white font-semibold text-sm shadow-sm">
                   A
                 </div>
-                <span className="font-medium text-gray-700 text-sm hidden sm:block">Admin</span>
+                <span className="font-medium text-gray-700 text-sm hidden sm:block">{userRole}</span>
                 <svg
                   className={`h-4 w-4 text-gray-600 transition-transform ${isMenuOpen ? "rotate-180" : ""}`}
                   fill="none"
