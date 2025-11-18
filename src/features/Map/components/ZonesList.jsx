@@ -1,4 +1,5 @@
-const ZonesList = ({ zones = [] }) => {
+import { Pencil, Trash2 } from 'lucide-react';
+const ZonesList = ({ zones = [], onEdit , onDelete }) => {
   if (!zones || zones.length === 0) {
     return (
       <div className="py-6 text-center">
@@ -17,8 +18,8 @@ const ZonesList = ({ zones = [] }) => {
     <div className="space-y-2 overflow-y-auto max-h-[calc(100vh-300px)]">
       {zones.map((zone) => (
         <div
-          key={zone.zone_id}
-          className="p-3 bg-white rounded-lg border border-gray-200 hover:border-purple-400 transition-all"
+          key={zone.zoneId}
+          className="p-3 bg-white rounded-lg border border-gray-200 hover:border-purple-400 transition-all group"
         >
           <div className="flex items-center gap-2 mb-2">
             <div
@@ -26,7 +27,23 @@ const ZonesList = ({ zones = [] }) => {
               style={{ backgroundColor: zone?.color }}
             />
             <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-xs text-gray-900 truncate">{zone?.zone_name || 'Unnamed Zone'}</h3>
+              <h3 className="font-semibold text-xs text-gray-900 truncate">{zone?.zoneName || 'Unnamed Zone'}</h3>
+            </div>
+            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              <button
+                onClick={() => onEdit?.(zone)}
+                className="p-1 hover:bg-blue-50 rounded transition-colors"
+                title="Edit zone"
+              >
+                <Pencil className="w-3.5 h-3.5 text-blue-600" />
+              </button>
+              <button
+                onClick={() => { onDelete(zone.zoneId)}}
+                className="p-1 hover:bg-red-50 rounded transition-colors"
+                title="Delete zone"
+              >
+                <Trash2 className="w-3.5 h-3.5 text-red-600" />
+              </button>
             </div>
           </div>
           <div className="space-y-1.5">
@@ -39,7 +56,7 @@ const ZonesList = ({ zones = [] }) => {
                   color: zone?.color
                 }}
               >
-                {zone?.category_name}
+                {zone?.categoryName}
               </span>
             </div>
             <div className="flex items-center justify-between text-xs">
