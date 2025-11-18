@@ -1,30 +1,33 @@
-import { BarChart3, Camera } from "lucide-react";
-const TabNavigation = ({ activeTab, onTabChange }) => (
-  <div className="bg-white rounded-lg shadow-sm mb-6">
-    <div className="flex border-b">
-      <button
-        onClick={() => onTabChange('cameras')}
-        className={`px-6 py-3 font-medium ${
-          activeTab === 'cameras'
-            ? 'text-purple-600 border-b-2 border-purple-600'
-            : 'text-gray-500 hover:text-gray-700'
-        }`}
-      >
-        <Camera className="inline mr-2" size={18} />
-        Khu vực giám sát
-      </button>
-      <button
-        onClick={() => onTabChange('dashboard')}
-        className={`px-6 py-3 font-medium ${
-          activeTab === 'dashboard'
-            ? 'text-purple-600 border-b-2 border-purple-600'
-            : 'text-gray-500 hover:text-gray-700'
-        }`}
-      >
-        <BarChart3 className="inline mr-2" size={18} />
-        Quản lý camera
-      </button>
+import { LayoutDashboard, Video } from "lucide-react";
+
+const TabNavigation = ({ activeTab, onChangeTab }) => {
+  const tabs = [
+    { id: "cameras", label: "Khu vực giám sát", icon: Video },
+    { id: "dashboard", label: "Quản lý camera", icon: LayoutDashboard }
+  ];
+
+  return (
+    <div className="flex gap-2">
+      {tabs.map(tab => {
+        const Icon = tab.icon;
+        const isActive = activeTab === tab.id;
+        return (
+          <button
+            key={tab.id}
+            onClick={() => onChangeTab(tab.id)}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+              isActive
+                ? "bg-purple-600 text-white"
+                : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
+            }`}
+          >
+            <Icon size={16} />
+            {tab.label}
+          </button>
+        );
+      })}
     </div>
-  </div>
-);
+  );
+};
+
 export default TabNavigation;

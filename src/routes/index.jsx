@@ -5,17 +5,17 @@ import Heatmap from "../features/Heatmap/Heatmap";
 import Downtime from "../features/Downtime/Downtime";
 
 import CameraZoneManager from "../features/Map/CameraZoneManager";
-import AuthenticationLayout from "../layouts/authenticationLayout";
-import SignInForm from "../features/Authentication/SignInForm";
 import GazeAnalysisDashboard from "../features/Gaze_Analysis/Gaze_Analysis";
-
-
+import SignIn from "../features/Authentication/components/SignIn";
+import SignUp from "../features/Authentication/components/signup";
+import AuthenticationLayout from "../features/Authentication/AuthenticationLayout";
 
 const AppRouter = () => {
   return (
     <Routes>
-      <Route path="/auth" element={<AuthenticationLayout />} >
-        <Route path="login" element= {<SignInForm />} />
+      <Route path="/auth" element={<AuthenticationLayout />}>
+        <Route path="signin" element={<SignIn />} />
+        <Route path="signup" element={<SignUp />} />
       </Route>
       <Route path="/" element={<MainLayout />}>
         <Route index element={<Dashboard />} />
