@@ -5,17 +5,18 @@ export const fecthGetToken = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const token = getToken();
-      return token;
+      return (await token).data;
     } catch (error) {
       return thunkAPI.rejectWithValue("Failed to get token");
     }
   }
 );
+
 export  const fecthLogin = createAsyncThunk(
   "auth/login",
   async (data, thunkAPI) => {
     try {
-      const response = await login ();
+      const response = await login (data);
       return response.data;
     }
     catch (error) {
@@ -27,7 +28,7 @@ export  const fecthSignup = createAsyncThunk(
   "auth/signup",
   async (data, thunkAPI) => {
     try {
-      const response = await signup ();
+      const response = await signup (data);
       return response.data;
     }
     catch (error) {

@@ -2,23 +2,46 @@ import { Outlet } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Fillter from '../components/Fillter';
-import { useDispatch , useSelector } from 'react-redux';
-import { use, useEffect } from 'react';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fecthGetToken } from '../features/Authentication/authenSlice';
+
 const MainLayout = () => {
-  
+  const dispatch = useDispatch();
+
+  // Lấy state từ slice "authen"
+  const { user, isLoading } = useSelector((state) => state.authen) || {};
+
+  useEffect(() => {
+    // Khi layout mount, gọi getToken để xác thực
+    dispatch(fecthGetToken());
+    console.log("Fetching token for authentication");
+  }, [dispatch]);
+
+  // Loader đơn giản khi đang xác thực token
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen text-gray-500">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-gray-700"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col min-h-screen bg-slate-50">
-      <Header />
-      
+      {/* Header nhận user */}
+      <Header user={user} />
+
       <main className="flex-grow w-full mx-auto px-4 sm:px-6 lg:px-8 py-3">
+        {/* Nếu muốn dùng Fillter thì bỏ comment */}
         {/* <div>
           <Fillter />
         </div> */}
         <div className="bg-white rounded-lg">
-          <Outlet /> 
+          <Outlet />
         </div>
       </main>
-      
+
       <Footer />
     </div>
   );
