@@ -20,17 +20,13 @@ const ZoneShape = ({ zone }) => {
     <Group visible={zone.visible !== false}>
       <Line points={points} closed fill={zone.color + "22"} stroke={zone.color} strokeWidth={3} />
       <Rect x={centerX - 60} y={centerY - 25} width={120} height={40} fill="rgba(0,0,0,0.7)" cornerRadius={4} />
-      <Text x={centerX - 60} y={centerY - 15} width={120} text={zone.zone_name || "Zone"} fontSize={14} fontStyle="bold" fill="#FFF" align="center" />
-      <Text x={centerX - 60} y={centerY + 2} width={120} text={zone.category_name} fontSize={12} fill={zone.color} align="center" />
+      <Text x={centerX - 60} y={centerY - 15} width={120} text={zone.zoneName || "Zone"} fontSize={14} fontStyle="bold" fill="#FFF" align="center" />
+      <Text x={centerX - 60} y={centerY + 2} width={120} text={zone.categoryName} fontSize={12} fill={zone.color} align="center" />
     </Group>
   );
 };
 
-// --- Vẽ các điểm đang tạo ---
 const DrawingPoints = ({ points }) => {
-  console.log("DrawingPoints rendering with points:", points);
-
-  // Convert flat array [x1,y1,x2,y2,...] thành [[x1,y1],[x2,y2],...]
   let pointPairs = [];
   if (points.length > 0) {
     if (typeof points[0] === "number") {
@@ -38,10 +34,9 @@ const DrawingPoints = ({ points }) => {
         pointPairs.push([points[i], points[i + 1]]);
       }
     } else {
-      pointPairs = points; // đã là [[x,y],...]
+      pointPairs = points; 
     }
   }
-
   return (
     <>
       {pointPairs.map((p, i) => (

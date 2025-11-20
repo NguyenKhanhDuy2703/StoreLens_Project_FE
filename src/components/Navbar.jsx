@@ -8,7 +8,7 @@ const navItems = [
   { id: 'td', label: 'Thời gian', path: '/thoi-gian-dung' },
   // { id: 'roi', label: 'Vùng quan tâm', path: '/vung-quan-tam' },
   { id: 'ces', label: 'Tương tác', path: '/diem-tuong-tac' },
-  { id: 'quản lý camera', label: 'Quản lý camera', path: '/quan-ly-cameras' },
+  { id: 'Thiết lập zone', label: 'Thiết lập zone', path: '/thiet-lap-khu-vuc ' },
 ];
 const Navbar = () => {
   return (

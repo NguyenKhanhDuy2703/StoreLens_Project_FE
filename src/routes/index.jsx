@@ -9,6 +9,7 @@ import GazeAnalysisDashboard from "../features/Gaze_Analysis/Gaze_Analysis";
 import SignIn from "../features/Authentication/components/SignIn";
 import SignUp from "../features/Authentication/components/signup";
 import AuthenticationLayout from "../features/Authentication/AuthenticationLayout";
+import ManagerCameras from "../features/ManagerCamera/ManagerCameras";
 
 const AppRouter = () => {
   return (
@@ -17,13 +18,16 @@ const AppRouter = () => {
         <Route path="signin" element={<SignIn />} />
         <Route path="signup" element={<SignUp />} />
       </Route>
+
       <Route path="/" element={<MainLayout />}>
         <Route index element={<Dashboard />} />
         <Route path="heatmap" element={<Heatmap />} />
         <Route path="thoi-gian-dung" element={<Downtime />} />
         <Route path="diem-tuong-tac" element={<GazeAnalysisDashboard />} />
-        <Route path="quan-ly-cameras" element={<CameraZoneManager />} />
+        <Route path="thiet-lap-khu-vuc" element={<CameraZoneManager />} />
+        <Route path="quan-ly-cameras" element={<ManagerCameras />} />       
       </Route>
+      <Route path="*" element={<div>404 Not Found</div>} />
     </Routes>
   );
 };
