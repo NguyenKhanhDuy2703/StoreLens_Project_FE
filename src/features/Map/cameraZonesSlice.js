@@ -8,7 +8,6 @@ const cameraZonesSlice = createSlice({
     selectedCamera: [],
     loading: false,
     error: null,
-    isChange : false,
   },
   reducers : {
     setSlectedCamera(state, action) {
@@ -25,7 +24,7 @@ const cameraZonesSlice = createSlice({
       if (state.selectedCamera.cam.cameraCode === newZone.cameraCode) {
         state.selectedCamera.zones.zones.push(newZone);
       }
-      state.isChange = true
+      console.log("State after adding new zone: ", current(state));
     },
     deleteZone(state, action) {
       const { cameraCode, zoneId } = action.payload;
@@ -39,7 +38,6 @@ const cameraZonesSlice = createSlice({
       if (state.selectedCamera.cam.cameraCode === cameraCode) {
         state.selectedCamera.zones.zones = tempZones
       }
-      state.isChange = true
     }, 
     editZone(state, action) {
       const { cameraCode, zoneData } = action.payload;
@@ -58,10 +56,17 @@ const cameraZonesSlice = createSlice({
           state.selectedCamera.zones.zones[selectedZoneIndex] = zoneData;
         } 
       }
-      state.isChange = true
+    },
+    addBackgroundImage(state, action) {
+      const { cameraCode, backgroundImage } = action.payload;
+      const checkZone = state.zones.find( (z) => z.cameraCode === cameraCode );
+      if (checkZone) {
+        checkZone.backgroundImage = backgroundImage;
+      }else {
+        throw new Error("Camera not found for adding background image");
+      }
+      state.selectedCamera.zones.backgroundImage = backgroundImage;
     }
-
-  
   },
   extraReducers: (builder) => {
     builder
@@ -92,5 +97,5 @@ const cameraZonesSlice = createSlice({
   }
 
 });
-export const { setSlectedCamera  ,addNewZone , deleteZone , editZone} = cameraZonesSlice.actions;
+export const { setSlectedCamera  ,addNewZone , deleteZone , editZone , addBackgroundImage} = cameraZonesSlice.actions;
 export default cameraZonesSlice.reducer;

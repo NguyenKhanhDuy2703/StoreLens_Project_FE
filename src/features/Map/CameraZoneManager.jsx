@@ -14,8 +14,7 @@ import {
   fetchAddZoneForCamera,
   fetchCamerasWithZones,
 } from "./ManagerCamera.thunk";
-import { addNewZone, deleteZone  , editZone , setSlectedCamera} from "./cameraZonesSlice";
-import LoadingOverlay from "../../components/common/Loading";
+import { addNewZone, deleteZone  , editZone  , addBackgroundImage} from "./cameraZonesSlice";
 
 const CameraZoneManager = () => {
   const [drawingPoints, setDrawingPoints] = useState([]);
@@ -27,28 +26,36 @@ const CameraZoneManager = () => {
   const { cameras, zones, selectedCamera , loading , isChange} = cameraZonesState;
   const stageRef = useRef(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [loadingImage, setLoadingImage] = useState(false);
 
   useEffect(() => {
     dispatch(fetchCamerasWithZones(""));
   }, [dispatch ]);
+
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (!file || !selectedCamera) return;
 
+    setLoadingImage(true);   // bật loading
+
     const reader = new FileReader();
     reader.onload = (event) => {
-      const updated = cameras.map((c) =>
-        c.camera_code === selectedCamera.camera_code
-          ? { ...c, background_image: event.target.result }
-          : c
-      );
+      const imageDataUrl = event.target.result;
 
-      setCameras(updated);
-      setSelectedCamera({
-        ...selectedCamera,
-        background_image: event.target.result,
-      });
+      const img = new window.Image();
+      img.src = imageDataUrl;
+
+      img.onload = () => {
+        dispatch(
+          addBackgroundImage({
+            cameraCode: selectedCamera.cam.cameraCode,
+            backgroundImage: imageDataUrl,
+          })
+        );
+        setLoadingImage(false); // tắt loading khi ảnh load xong
+      };
     };
+
     reader.readAsDataURL(file);
   };
 
@@ -106,10 +113,12 @@ const CameraZoneManager = () => {
     dispatch(fetchAddZoneForCamera(selectedCamera.zones));
     setIsSaving(false);
   };
+
   const handleDeleteZone = (zoneId) => {
     if (!selectedCamera) return;
     dispatch(deleteZone({ cameraCode: selectedCamera.cam.cameraCode, zoneId }));
   };
+
   const handleOnEdit = (zone) => {
     setZoneDraf((prev) => {
       return { ...prev, ...zone, cameraCode: selectedCamera.cam.cameraCode };
@@ -117,25 +126,27 @@ const CameraZoneManager = () => {
     setShowZoneForm(true);
     setIsEditing(true);
   };
-const onSaveEditZone = () => {
+
+  const onSaveEditZone = () => {
     if (!selectedCamera) return;
     dispatch(editZone({ cameraCode: selectedCamera.cam.cameraCode, zoneData: zoneDraf }));
     setDrawingPoints([]);
     setShowZoneForm(false);
     setZoneDraf({});
   };
-const onCancelDrawZone = () => {
+
+  const onCancelDrawZone = () => {
     setIsEditing(false);      
     setShowZoneForm(false);    
     setDrawingPoints([]);    
     setZoneDraf(null);  
-} 
-useEffect(() => {
-      setDrawingPoints([]);
-      setShowZoneForm(false);
-      setZoneDraf({});  
-},[selectedCamera])
+  };
 
+  useEffect(() => {
+    setDrawingPoints([]);
+    setShowZoneForm(false);
+    setZoneDraf({});  
+  },[selectedCamera]);
 
   return (
     <div className="min-h-screen w-full bg-gray-50 p-6">
@@ -175,25 +186,26 @@ useEffect(() => {
                     </div>
                   )}
                   <div className="flex gap-2">
-                    {!selectedCamera?.zones?.backgroundImage ? (
-                      <label className="px-4 py-2 bg-blue-600 text-white rounded-md cursor-pointer inline-flex items-center gap-2 hover:bg-blue-700 transition-colors">
-                        <Upload size={18} /> Upload Image
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleImageUpload}
-                          className="hidden"
-                        />
-                      </label>
-                    ) : (
+                    <label className="px-4 py-2 bg-blue-600 text-white rounded-md cursor-pointer inline-flex items-center gap-2 hover:bg-blue-700 transition-colors">
+                      <Upload size={18} /> {selectedCamera?.zones?.backgroundImage ? 'Đổi ảnh' : 'Upload Image'}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="hidden"
+                      />
+                    </label>
+                    {selectedCamera?.zones?.backgroundImage && (
                       <>
-                        {drawingPoints.length > 0 && (<button className="px-4 py-2 bg-blue-600 text-white rounded-md inline-flex items-center gap-2 hover:bg-blue-700 transition-colors font-medium">
-                          <Edit3 size={18}
-                          onClick={onCancelDrawZone}
-                          />
-                          Hủy vẽ
-                        </button>
-                      )}
+                        {drawingPoints.length > 0 && (
+                          <button 
+                            onClick={onCancelDrawZone}
+                            className="px-4 py-2 bg-gray-600 text-white rounded-md inline-flex items-center gap-2 hover:bg-gray-700 transition-colors font-medium"
+                          >
+                            <Edit3 size={18} />
+                            Hủy vẽ
+                          </button>
+                        )}
                         <button
                           onClick={updateZoneToServer}
                           disabled={isSaving}
@@ -315,10 +327,10 @@ useEffect(() => {
                 isEditing={isEditing}
                 onEdit={onSaveEditZone}
                 onCancel={() => {
-                  setIsEditing(false),
-                    setShowZoneForm(false),
-                    setDrawingPoints([]),
-                    setZoneDraf({});
+                  setIsEditing(false);
+                  setShowZoneForm(false);
+                  setDrawingPoints([]);
+                  setZoneDraf({});
                 }}
               />
             </div>

@@ -8,6 +8,7 @@ const store = configureStore({
     dashboard: dashboardReducer,
     cameraZones: cameraZonesReducer,
     authen : authenSlice,
+    heatmap :heatmapReducer
     stores : storesSlice,
   },
 });
