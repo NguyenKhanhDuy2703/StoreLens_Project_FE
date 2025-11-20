@@ -1,7 +1,6 @@
 import { Eye, EyeOff, Lock, User, Mail, UserPlus } from "lucide-react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-// import { registerUser } from "./authenSlice";
 import { useNavigate } from "react-router-dom";
 
 const SignUpForm = () => {
