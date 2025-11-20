@@ -1,54 +1,80 @@
 import { Eye, EyeOff, Lock, User } from "lucide-react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-// import { loginUser } from "./authenSlice";
+import { fecthLogin } from "../authenSlice";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SignInForm = () => {
   const [formData, setFormData] = useState({ account: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  // Xử lý nhập liệu
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    if (errors[name]) setErrors(prev => ({ ...prev, [name]: "" }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
+  // Kiểm tra dữ liệu
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.account) newErrors.account = 'Account is required';
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
-    }
+    if (!formData.account) newErrors.account = "Tài khoản không được để trống";
+    if (!formData.password) newErrors.password = "Mật khẩu không được để trống";
+    else if (formData.password.length < 6)
+      newErrors.password = "Mật khẩu phải có ít nhất 6 ký tự";
     return newErrors;
   };
 
-  const handleSubmit = () => {
+  // Submit
+  const handleSubmit = async () => {
     const newErrors = validateForm();
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
+
     setIsLoading(true);
-    dispatch(loginUser({ account: formData.account, password: formData.password }))
-      .finally(() => setIsLoading(false));
+
+    try {
+      const result = await dispatch(
+        fecthLogin({
+          account: formData.account,
+          password: formData.password,
+        })
+      ).unwrap();
+
+      toast.success("Đăng nhập thành công!", { autoClose: 1500 });
+      setTimeout(() => navigate("/"), 1500);
+    } catch (error) {
+      toast.error(error || "Đăng nhập thất bại! Vui lòng thử lại.", { autoClose: 2000 });
+    }
+
+    setIsLoading(false);
   };
 
   return (
     <div className="animate-fadeIn">
+      {/* Toast Container */}
+      <ToastContainer position="top-right" />
+
       {/* Header */}
       <div className="text-center mb-6">
         <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-full mb-3 shadow-lg">
           <Lock className="text-white" size={24} />
         </div>
-        <h2 className="text-2xl font-bold text-gray-800 mb-1">Welcome Back</h2>
-        <p className="text-sm text-gray-500">Sign in to continue to your account</p>
+        <h2 className="text-2xl font-bold text-gray-800 mb-1">
+          Chào mừng bạn trở lại
+        </h2>
+        <p className="text-sm text-gray-500">
+          Đăng nhập để tiếp tục với tài khoản của bạn
+        </p>
       </div>
 
       {/* Form Fields */}
@@ -56,7 +82,7 @@ const SignInForm = () => {
         {/* Account Input */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Account
+            Tài khoản
           </label>
           <div className="relative">
             <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
@@ -65,27 +91,23 @@ const SignInForm = () => {
             <input
               type="text"
               name="account"
-              placeholder="Enter your account"
+              placeholder="Nhập tài khoản"
               value={formData.account}
               onChange={handleChange}
-              className={`w-full pl-11 pr-4 py-3 bg-gray-50 border-2 rounded-xl focus:outline-none focus:bg-white transition-all ${
-                errors.account 
-                  ? "border-red-400 focus:border-red-500" 
-                  : "border-gray-200 focus:border-indigo-500"
-              }`}
+              className={`w-full pl-11 pr-4 py-3 bg-gray-50 border-2 rounded-xl ${
+                errors.account ? "border-red-400" : "border-gray-200"
+              } focus:outline-none focus:bg-white focus:border-indigo-500`}
             />
           </div>
           {errors.account && (
-            <p className="text-red-500 text-sm mt-1.5 ml-1 flex items-center gap-1">
-              <span className="text-xs">⚠</span> {errors.account}
-            </p>
+            <p className="text-red-500 text-sm mt-1.5 ml-1">⚠ {errors.account}</p>
           )}
         </div>
 
         {/* Password Input */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Password
+            Mật khẩu
           </label>
           <div className="relative">
             <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
@@ -94,37 +116,30 @@ const SignInForm = () => {
             <input
               type={showPassword ? "text" : "password"}
               name="password"
-              placeholder="Enter your password"
+              placeholder="Nhập mật khẩu"
               value={formData.password}
               onChange={handleChange}
-              className={`w-full pl-11 pr-12 py-3 bg-gray-50 border-2 rounded-xl focus:outline-none focus:bg-white transition-all ${
-                errors.password 
-                  ? "border-red-400 focus:border-red-500" 
-                  : "border-gray-200 focus:border-indigo-500"
-              }`}
+              className={`w-full pl-11 pr-12 py-3 bg-gray-50 border-2 rounded-xl ${
+                errors.password ? "border-red-400" : "border-gray-200"
+              } focus:outline-none focus:bg-white focus:border-indigo-500`}
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-indigo-600 transition-colors p-1 rounded-lg hover:bg-indigo-50"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-indigo-600 p-1"
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
           </div>
           {errors.password && (
-            <p className="text-red-500 text-sm mt-1.5 ml-1 flex items-center gap-1">
-              <span className="text-xs">⚠</span> {errors.password}
-            </p>
+            <p className="text-red-500 text-sm mt-1.5 ml-1">⚠ {errors.password}</p>
           )}
         </div>
 
         {/* Forgot Password */}
         <div className="text-right">
-          <button 
-            type="button"
-            className="text-sm text-indigo-600 hover:text-indigo-700 font-medium transition-colors hover:underline"
-          >
-            Forgot password?
+          <button className="text-sm text-indigo-600 hover:underline font-medium">
+            Quên mật khẩu?
           </button>
         </div>
 
@@ -132,28 +147,9 @@ const SignInForm = () => {
         <button
           onClick={handleSubmit}
           disabled={isLoading}
-          className="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
+          className="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition"
         >
-          {isLoading ? (
-            <>
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-              <span>Signing in...</span>
-            </>
-          ) : (
-            "SIGN IN"
-          )}
-        </button>
-      </div>
-
-      {/* Sign Up Link - Mobile Only */}
-      <div className="mt-8 text-center lg:hidden">
-        <p className="text-gray-600 mb-3">Don't have an account?</p>
-        <button 
-          type="button"
-          onClick={() => navigate('/signup')}
-          className="inline-block px-8 py-2.5 border-2 border-indigo-600 text-indigo-600 rounded-xl font-semibold hover:bg-indigo-600 hover:text-white transition-all duration-300 transform hover:scale-105"
-        >
-          SIGN UP
+          {isLoading ? "Đang đăng nhập..." : "Đăng nhập"}
         </button>
       </div>
     </div>

@@ -11,7 +11,7 @@ export const login = async (data) => {
 }
 export const signup = async (data) => {
   try {
-    const response = await axiosInstance.post(`${BASE_URL}/signup`, data);
+    const response = await axiosInstance.post(`${BASE_URL}/register`, data);
     return response;
   }
   catch (error) {
@@ -35,3 +35,4 @@ export const getToken = async() => {
     throw new Error("Failed to get token");
   }
 };
+
