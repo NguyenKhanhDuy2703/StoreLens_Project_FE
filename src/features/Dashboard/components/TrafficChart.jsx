@@ -16,7 +16,6 @@ const TrafficChart = ({ dataCharts }) => {
       }));
       
       setChartData({ traffic, sales });
-      console.log("chartData set in TrafficChart", { traffic, sales });
     }
   }, [dataCharts]);
 

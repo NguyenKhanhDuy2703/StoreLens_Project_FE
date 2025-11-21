@@ -18,7 +18,7 @@ import {
   fetchGetChartData,
   fetchGetTopProducts,
   fetchGetZonePerformance,
-} from "./dashboardSlice"; /////
+} from "./dashboard.thunk"; /////
 const StoreLensDashboard = () => {
   const [storeId, setStoreId] = useState("STORE001");
   const [range, setRange] = useState("today");

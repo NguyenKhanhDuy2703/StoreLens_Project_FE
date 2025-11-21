@@ -44,7 +44,7 @@ export const getZonePerformance = async ({ storeId, range  }) => {
         const response = await axiosInstance.get(BASE_URL + "/performanceZones", {
             params: { store_id : storeId, range    }
         })
-        console.log("Zone Performance data from API:", response.data.data);
+        
         return response.data.data
     } catch (error) {
         throw error
