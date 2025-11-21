@@ -1,67 +1,66 @@
 import { Eye, EyeOff, Lock, User } from "lucide-react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { fecthLogin } from "../authenSlice";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { fecthLogin } from "../authen.thunk";
 
 const SignInForm = () => {
   const [formData, setFormData] = useState({ account: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  // Xử lý nhập liệu
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
-
-  // Kiểm tra dữ liệu
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.account) newErrors.account = "Tài khoản không được để trống";
-    if (!formData.password) newErrors.password = "Mật khẩu không được để trống";
-    else if (formData.password.length < 6)
-      newErrors.password = "Mật khẩu phải có ít nhất 6 ký tự";
+    if (!formData.account.trim())
+      newErrors.account = "Tài khoản không được để trống";
+
+    if (!formData.password)
+      newErrors.password = "Mật khẩu không được để trống";
+
     return newErrors;
   };
-
-  // Submit
   const handleSubmit = async () => {
+    if (isLoading) return; 
     const newErrors = validateForm();
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-
     setIsLoading(true);
-
     try {
       const result = await dispatch(
         fecthLogin({
-          account: formData.account,
-          password: formData.password,
-        })
+          account: formData.account.trim(),
+          password: formData.password,})
       ).unwrap();
 
       toast.success("Đăng nhập thành công!", { autoClose: 1500 });
+
       setTimeout(() => navigate("/"), 1500);
     } catch (error) {
-      toast.error(error || "Đăng nhập thất bại! Vui lòng thử lại.", { autoClose: 2000 });
+      toast.error(error || "Đăng nhập thất bại! Vui lòng thử lại.", {
+        autoClose: 2000,
+      });
     }
 
     setIsLoading(false);
   };
 
+  const handleKeyEnter = (e) => {
+    if (e.key === "Enter") handleSubmit();
+  };
+
   return (
-    <div className="animate-fadeIn">
-      {/* Toast Container */}
+    <div className="animate-fadeIn" onKeyDown={handleKeyEnter}>
       <ToastContainer position="top-right" />
 
       {/* Header */}
@@ -84,10 +83,10 @@ const SignInForm = () => {
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Tài khoản
           </label>
+
           <div className="relative">
-            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-              <User size={20} />
-            </div>
+            <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+
             <input
               type="text"
               name="account"
@@ -99,6 +98,7 @@ const SignInForm = () => {
               } focus:outline-none focus:bg-white focus:border-indigo-500`}
             />
           </div>
+
           {errors.account && (
             <p className="text-red-500 text-sm mt-1.5 ml-1">⚠ {errors.account}</p>
           )}
@@ -109,10 +109,10 @@ const SignInForm = () => {
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Mật khẩu
           </label>
+
           <div className="relative">
-            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-              <Lock size={20} />
-            </div>
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+
             <input
               type={showPassword ? "text" : "password"}
               name="password"
@@ -123,14 +123,16 @@ const SignInForm = () => {
                 errors.password ? "border-red-400" : "border-gray-200"
               } focus:outline-none focus:bg-white focus:border-indigo-500`}
             />
+
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-indigo-600 p-1"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-indigo-600 p-1"
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
           </div>
+
           {errors.password && (
             <p className="text-red-500 text-sm mt-1.5 ml-1">⚠ {errors.password}</p>
           )}
@@ -147,7 +149,7 @@ const SignInForm = () => {
         <button
           onClick={handleSubmit}
           disabled={isLoading}
-          className="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition"
+          className="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition disabled:opacity-60"
         >
           {isLoading ? "Đang đăng nhập..." : "Đăng nhập"}
         </button>

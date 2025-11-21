@@ -6,7 +6,7 @@ export const fetchAllStores = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const data = await getAllStores();
-      return data; // data là mảng stores [{store_id, store_name}, ...]
+      return data; 
     } catch (error) {
       return thunkAPI.rejectWithValue("Failed to fetch stores");
     }

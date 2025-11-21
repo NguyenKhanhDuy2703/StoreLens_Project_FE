@@ -6,17 +6,18 @@ import Downtime from "../features/Downtime/Downtime";
 
 import CameraZoneManager from "../features/Map/CameraZoneManager";
 import GazeAnalysisDashboard from "../features/Gaze_Analysis/Gaze_Analysis";
-import SignIn from "../features/Authentication/components/SignIn";
-import SignUp from "../features/Authentication/components/signup";
+import SignInForm from "../features/Authentication/components/SignIn";
+import SignUpForm from "../features/Authentication/components/signup";
 import AuthenticationLayout from "../features/Authentication/AuthenticationLayout";
 import ManagerCameras from "../features/ManagerCamera/ManagerCameras";
+import NotFound from "../components/common/NotFound";
 
 const AppRouter = () => {
   return (
     <Routes>
       <Route path="/auth" element={<AuthenticationLayout />}>
-        <Route path="signin" element={<SignIn />} />
-        <Route path="signup" element={<SignUp />} />
+        <Route path="signin" element={<SignInForm />} />
+        <Route path="signup" element={<SignUpForm />} />
       </Route>
 
       <Route path="/" element={<MainLayout />}>
@@ -27,7 +28,7 @@ const AppRouter = () => {
         <Route path="thiet-lap-khu-vuc" element={<CameraZoneManager />} />
         <Route path="quan-ly-cameras" element={<ManagerCameras />} />       
       </Route>
-      <Route path="*" element={<div>404 Not Found</div>} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };
