@@ -6,7 +6,7 @@ export const login = async (data) => {
     return response;
   }
   catch (error) {
-    throw new Error("Failed to login");
+    throw new Error(error.response?.data?.message || "Failed to login");
   }
 }
 export const signup = async (data) => {
@@ -20,7 +20,7 @@ export const signup = async (data) => {
 };
 export const logout = async() => {
   try {
-    const response = await axiosInstance.post(`${BASE_URL}/logout`);
+    const response = await axiosInstance.get(`${BASE_URL}/logout`);
     return response;
   }
   catch (error) {
