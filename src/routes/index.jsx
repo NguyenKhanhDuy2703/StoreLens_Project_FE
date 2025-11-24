@@ -10,6 +10,7 @@ import SignInForm from "../features/Authentication/components/SignIn";
 import SignUpForm from "../features/Authentication/components/signup";
 import AuthenticationLayout from "../features/Authentication/AuthenticationLayout";
 import ManagerCameras from "../features/ManagerCamera/ManagerCameras";
+import ManagerUser from "../features/ManagerUser/ManagerUsers";
 import NotFound from "../components/common/NotFound";
 
 const AppRouter = () => {
@@ -26,7 +27,8 @@ const AppRouter = () => {
         <Route path="thoi-gian-dung" element={<Downtime />} />
         <Route path="diem-tuong-tac" element={<GazeAnalysisDashboard />} />
         <Route path="thiet-lap-khu-vuc" element={<CameraZoneManager />} />
-        <Route path="quan-ly-cameras" element={<ManagerCameras />} />       
+        <Route path="quan-ly-cameras" element={<ManagerCameras />} />
+        <Route path="quan-ly-nguoi-dung" element={<ManagerUser />} />       
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>
