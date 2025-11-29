@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 const navItems = [
+
   { id: "tl", label: "Thống kê", path: "/" },
   { id: "hm", label: "bản đồ nhiệt", path: "/heatmap" },
   { id: "td", label: "Thời gian", path: "/thoi-gian-dung" },
@@ -9,6 +10,8 @@ const navItems = [
     label: "Thiết lập khu vực",
     path: "/thiet-lap-khu-vuc ",
   },
+  { id: 'qlsp', label: 'Quản lý sản phẩm', path: '/quan-ly-san-pham' },
+
 ];
 const Navbar = () => {
   return (
