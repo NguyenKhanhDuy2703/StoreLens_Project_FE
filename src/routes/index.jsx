@@ -3,6 +3,7 @@ import MainLayout from "../layouts/MainLayout";
 import Dashboard from "../features/Dashboard/Dashboard";
 import Heatmap from "../features/Heatmap/Heatmap";
 import Downtime from "../features/Downtime/Downtime";
+import ProductManagement from "../features/ProductManagement/ProductManagement";
 
 import CameraZoneManager from "../features/Map/CameraZoneManager";
 import GazeAnalysisDashboard from "../features/Gaze_Analysis/Gaze_Analysis";
@@ -27,8 +28,14 @@ const AppRouter = () => {
         <Route path="thoi-gian-dung" element={<Downtime />} />
         <Route path="diem-tuong-tac" element={<GazeAnalysisDashboard />} />
         <Route path="thiet-lap-khu-vuc" element={<CameraZoneManager />} />
+<<<<<<< HEAD
         <Route path="quan-ly-cameras" element={<ManagerCameras />} />
         <Route path="quan-ly-nguoi-dung" element={<ManagerUser />} />       
+=======
+        <Route path="quan-ly-cameras" element={<ManagerCameras />} />  
+        
+        <Route path="quan-ly-san-pham" element={<ProductManagement />} />     
+>>>>>>> a79b3e9f2a51a256125076035c750db3f17a3fea
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>
