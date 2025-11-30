@@ -2,14 +2,16 @@ import {
   TrendingUp,
   TrendingDown,
 } from 'lucide-react';
+import EmptyState from '../../../components/common/EmptyState';
 const ZonePerformanceTable = ({zonePerformance}) => {
+  const isEmpty = !zonePerformance?.zones || zonePerformance?.zones.length === 0;
   return (
     <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-lg">
       <div className="mb-6">
         <h3 className="text-lg font-bold text-gray-900">Hiệu suất theo khu vực</h3>
         <p className="text-sm text-gray-500 mt-1">Phân tích chi tiết từng khu vực trong cửa hàng</p>
       </div>
-      <div className="overflow-x-auto">
+      {isEmpty ? ( <EmptyState title="Chưa có dữ liệu khu vực" description="Hệ thống chưa ghi nhận dữ liệu khu vực trong thời gian gần đây. Dữ liệu sẽ xuất hiện khi có cập nhật." /> ) : ( <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
             <tr className="border-b-2 border-gray-200">
@@ -48,7 +50,8 @@ const ZonePerformanceTable = ({zonePerformance}) => {
             ))}
           </tbody>
         </table>
-      </div>
+      </div>)}
+     
     </div>
   );
 };

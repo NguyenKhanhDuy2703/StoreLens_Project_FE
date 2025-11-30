@@ -44,7 +44,7 @@ const CameraZoneManager = () => {
 
       const img = new window.Image();
       img.src = imageDataUrl;
-
+      console.log("Image data URL:", imageDataUrl);
       img.onload = () => {
         dispatch(
           addBackgroundImage({
@@ -94,6 +94,7 @@ const CameraZoneManager = () => {
 
   const onSaveZone = () => {
     if (!selectedCamera) return;
+   
     dispatch(addNewZone(zoneDraf));
     setDrawingPoints([]);
     setShowZoneForm(false);
