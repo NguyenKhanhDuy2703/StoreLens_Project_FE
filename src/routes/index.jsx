@@ -20,7 +20,6 @@ const AppRouter = () => {
         <Route path="signin" element={<SignInForm />} />
         <Route path="signup" element={<SignUpForm />} />
       </Route>
-
       <Route path="/" element={<MainLayout />}>
         <Route index element={<Dashboard />} />
         <Route path="heatmap" element={<Heatmap />} />
@@ -28,7 +27,6 @@ const AppRouter = () => {
         <Route path="diem-tuong-tac" element={<GazeAnalysisDashboard />} />
         <Route path="thiet-lap-khu-vuc" element={<CameraZoneManager />} />
         <Route path="quan-ly-cameras" element={<ManagerCameras />} />  
-        
         <Route path="quan-ly-san-pham" element={<ProductManagement />} />     
       </Route>
       <Route path="*" element={<NotFound />} />

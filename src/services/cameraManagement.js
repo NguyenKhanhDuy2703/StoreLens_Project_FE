@@ -12,8 +12,18 @@ export const getListCamerasWithZones = async ({type}) => {
 }
 export const postZoneforCamera = async (zone) => {
     try {  
+        console.log("Posting zone for camera:", zone);
+        const formData = new FormData();
+        formData.append('background_image', zone.zones.background_image);
+        formData.append('width_frame', zone.zones.width_frame);
+        formData.append('height_frame', zone.zones.height_frame);
+        formData.append('zones', zone.zones.zones);
         const cameraCode = zone.cameraCode;
-        const response = await axiosInstance.post(`${BASE_URL}/${cameraCode}/zones`, zone.zones );
+        const response = await axiosInstance.post(`${BASE_URL}/${cameraCode}/zones`,  formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
         return response.data;
     } catch (error) {
         console.error("Error in postZoneforCamera:", error);

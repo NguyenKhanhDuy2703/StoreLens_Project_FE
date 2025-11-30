@@ -66,6 +66,7 @@ const cameraZonesSlice = createSlice({
         throw new Error("Camera not found for adding background image");
       }
       state.selectedCamera.zones.backgroundImage = backgroundImage;
+      console.log("State after adding background image: ", current(state));
     }
   },
   extraReducers: (builder) => {

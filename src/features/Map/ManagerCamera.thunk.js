@@ -42,6 +42,7 @@ export  const fetchAddZoneForCamera = createAsyncThunk(
     'cameras/fetchAddZoneForCamera',
     async ( zoneData , thunkAPI) => {
         try {
+            
             const tranferData = {
                 cameraCode : zoneData.cameraCode,
                 zones : {

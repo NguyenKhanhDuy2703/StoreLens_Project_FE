@@ -19,6 +19,7 @@ import {
   fetchGetTopProducts,
   fetchGetZonePerformance,
 } from "./dashboard.thunk"; /////
+import StoreFilter from "./components/Fillter";
 const StoreLensDashboard = () => {
   const [storeId, setStoreId] = useState("STORE001");
   const [range, setRange] = useState("today");
@@ -57,6 +58,7 @@ const StoreLensDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
+      <StoreFilter />
       {/* Thẻ KPI */}
       <div className="grid grid-cols-5 gap-5 mb-8">
         <KPICard
