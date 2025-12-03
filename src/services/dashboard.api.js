@@ -50,3 +50,25 @@ export const getZonePerformance = async ({ storeId, range  }) => {
         throw error
     }
 }
+
+export const importInvoice = async ({ storeId, file }) => {
+    try {
+        // 1. Tạo FormData
+        const formData = new FormData();
+        formData.append("file", file);      // Key 'file' khớp với Backend
+        formData.append("store_id", storeId); // Key 'store_id' khớp với Backend
+
+        // 2. Gọi API
+        // Lưu ý: Backend route là /invoices/import chứ không phải /dashboard
+        // Ta không dùng BASE_URL ở đây để tránh sai đường dẫn
+        const response = await axiosInstance.post("/invoices/import", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+        
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}

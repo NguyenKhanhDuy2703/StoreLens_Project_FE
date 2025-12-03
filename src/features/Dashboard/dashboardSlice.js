@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import {fecthGetStatusMetrics , fetchGetChartData , fetchGetTopProducts , fetchGetZonePerformance}from "./dashboard.thunk"
+import {fecthGetStatusMetrics , fetchGetChartData , fetchGetTopProducts , fetchGetZonePerformance ,fetchImportInvoice}from "./dashboard.thunk"
 const dashboardSlice = createSlice({
   name: "dashboard",
   initialState: {
@@ -28,7 +28,14 @@ const dashboardSlice = createSlice({
 
       isLoading: false,
     },
+    importStatus: {
+        isLoading: false,
+        success: false,
+        error: null
+    }
+  
   },
+  
   reducers: {}, ///
 
   extraReducers: (builder) => {
@@ -109,6 +116,24 @@ const dashboardSlice = createSlice({
     });
     builder.addCase(fetchGetZonePerformance.rejected, (state, action) => {
       state.isLoading = false;
+    });
+
+    // import dux lieeuj 
+
+    builder.addCase(fetchImportInvoice.pending, (state) => {
+      state.importStatus.isLoading = true;
+      state.importStatus.success = false;
+      state.importStatus.error = null;
+    });
+    builder.addCase(fetchImportInvoice.fulfilled, (state, action) => {
+      state.importStatus.isLoading = false;
+      state.importStatus.success = true;
+      // Có thể reload lại dữ liệu dashboard ngay sau khi import thành công nếu muốn
+    });
+    builder.addCase(fetchImportInvoice.rejected, (state, action) => {
+      state.importStatus.isLoading = false;
+      state.importStatus.success = false;
+      state.importStatus.error = action.payload; // Message lỗi từ Thunk
     });
   },
 });
