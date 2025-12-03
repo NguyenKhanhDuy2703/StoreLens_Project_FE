@@ -27,13 +27,10 @@ const AppRouter = () => {
         <Route path="thoi-gian-dung" element={<Downtime />} />
         <Route path="diem-tuong-tac" element={<GazeAnalysisDashboard />} />
         <Route path="thiet-lap-khu-vuc" element={<CameraZoneManager />} />
-<<<<<<< HEAD
         <Route path="quan-ly-cameras" element={<ManagerCameras />} />
         <Route path="quan-ly-nguoi-dung" element={<ManagerUser />} />       
-=======
         <Route path="quan-ly-cameras" element={<ManagerCameras />} />  
         <Route path="quan-ly-san-pham" element={<ProductManagement />} />     
->>>>>>> a79b3e9f2a51a256125076035c750db3f17a3fea
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>

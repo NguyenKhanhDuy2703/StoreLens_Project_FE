@@ -4,6 +4,7 @@ import {
   getDataCharts,
   getTopProducts,
   getZonePerformance,
+  importInvoice,
 } from "../../services/dashboard.api";
 export const fecthGetStatusMetrics = createAsyncThunk(
   "dashboard/fetchGetStatusMetrics",
@@ -59,6 +60,23 @@ export const fetchGetZonePerformance = createAsyncThunk(
       return response;
     } catch (error) {
       return thunkAPI.rejectWithValue("Failed to fetch zone performance");
+    }
+  }
+);
+// ==== import invoice
+export const fetchImportInvoice = createAsyncThunk(
+  "dashboard/fetchImportInvoice",
+  async ({ storeId, file }, thunkAPI) => {
+    try {
+      const response = await importInvoice({
+        storeId,
+        file,
+      });
+      return response; // Trả về data thành công
+    } catch (error) {
+      // Lấy message lỗi từ backend trả về
+      const message = error.response?.data?.message || "Import thất bại";
+      return thunkAPI.rejectWithValue(message);
     }
   }
 );
