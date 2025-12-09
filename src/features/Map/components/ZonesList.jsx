@@ -13,7 +13,6 @@ const ZonesList = ({ zones = [], onEdit , onDelete }) => {
       </div>
     );
   }
-
   return (
     <div className="space-y-2 overflow-y-auto max-h-[calc(100vh-300px)]">
       {zones.map((zone) => (

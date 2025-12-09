@@ -107,13 +107,13 @@ const StoreLensDashboard = () => {
           color="pink"
         />
       </div>
-      <div className="mb-8">
+      {/* <div className="mb-8">
         <StatusBar
           customerCurrent={customerCurrent}
           checkoutLength={checkoutLength}
           peakHours={peakHours}
         />
-      </div>
+      </div> */}
       <div className="flex flex-col lg:flex-row gap-8 mb-8">
         <div className="lg:flex-[2]">
           <TrafficChart dataCharts={dataCharts} />
