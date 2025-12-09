@@ -5,7 +5,8 @@ export const fetchCamerasWithZones = createAsyncThunk(
     async (type, thunkAPI) => {
         try {
             const response = await getListCamerasWithZones(type);
-            const cameras = response.map ( (cam) => {
+            console.log("Fetched cameras with zones:", response);
+            const cameras = response?.map ( (cam) => {
                 return {
                     storeId : cam.store_id,   
                     cameraCode : cam.camera_code,
@@ -14,10 +15,22 @@ export const fetchCamerasWithZones = createAsyncThunk(
                     rtspUrl : cam.rtsp_url,
                 }
             })
-            const zones = response.map ( (item) => {
+           console.log("Cameras mapped:", cameras);
+            const zones = response?.map ( (item) => {
+                if(!item.zones_info) {
+                    return {
+                        cameraCode : item.camera_code,
+                        backgroundImage : "",
+                        widthFrame : 0,
+                        heightFrame : 0,
+                        zones : []
+                    }
+
+                
+                }
                 return {
                     cameraCode : item.camera_code,
-                    backgroundImage : item.zones_info.background_image,
+                    backgroundImage : item?.zones_info?.background_image || "",
                     widthFrame : item.zones_info.width_frame,
                     heightFrame : item.zones_info.height_frame,
                     zones : item.zones_info.zones.map( (z)=> {
@@ -31,9 +44,11 @@ export const fetchCamerasWithZones = createAsyncThunk(
                     })
                 }
             } )
+            
             return {cameras , zones};
             
         } catch (error) {
+            console.error("Error fetching cameras with zones:", error);
             return thunkAPI.rejectWithValue(error.message);
         }
     }

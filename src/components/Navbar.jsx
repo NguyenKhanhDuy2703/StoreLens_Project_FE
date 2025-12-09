@@ -2,9 +2,9 @@ import { NavLink } from "react-router-dom";
 const navItems = [
 
   { id: "tl", label: "Thống kê", path: "/" },
-  { id: "hm", label: "bản đồ nhiệt", path: "/heatmap" },
+  { id: "hm", label: "Bản đồ nhiệt", path: "/heatmap" },
   { id: "td", label: "Thời gian", path: "/thoi-gian-dung" },
-  { id: "ces", label: "Tương tác", path: "/diem-tuong-tac" },
+  // { id: "ces", label: "Tương tác", path: "/diem-tuong-tac" },
   {
     id: "Thiết lập zone",
     label: "Thiết lập khu vực",

@@ -6,7 +6,7 @@ import {
   DrawingPoints,
   KonvaImage,
   ZoneShape,
-} from "./components/toolDrawZone";
+} from "./components/ToolDrawZone";
 import CameraSidebar from "./components/CameraSideBar";
 import ZonesList from "./components/ZonesList";
 import ZoneForm from "./components/ZoneForm";
@@ -30,7 +30,7 @@ const CameraZoneManager = () => {
 
   useEffect(() => {
     dispatch(fetchCamerasWithZones(""));
-  }, [dispatch ]);
+  }, []);
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -44,7 +44,6 @@ const CameraZoneManager = () => {
 
       const img = new window.Image();
       img.src = imageDataUrl;
-      console.log("Image data URL:", imageDataUrl);
       img.onload = () => {
         dispatch(
           addBackgroundImage({
@@ -55,7 +54,7 @@ const CameraZoneManager = () => {
         setLoadingImage(false); // tắt loading khi ảnh load xong
       };
     };
-
+    
     reader.readAsDataURL(file);
   };
 

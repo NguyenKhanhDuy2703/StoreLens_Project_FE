@@ -1,145 +1,151 @@
 import { Download, RotateCcw } from "lucide-react";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setStatusCurrent } from "../HeatmapSlice";
+const LeftSidebar = ({
 
-const LeftSidebar = ({showZones , showFlow , showGrid , opacity ,handleExport , handleReset } ) => {
-      const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
-      const [selectedStore, setSelectedStore] = useState('STORE001');
-      const [selectedCamera, setSelectedCamera] = useState('C01');
+  selectedDate,
+  setSelectedDate,
+  selectedStore,
+  setSelectedStore,
+  selectedCamera,
+  setSelectedCamera,
+  handleExport,
+  handleReset,
+}) => {
+  const {grid , zone , opacity} = useSelector((state) => state.heatmap.statusCurrent);
+  const dispatch = useDispatch();
+  const setShowZones = (value) => {
+    dispatch(setStatusCurrent({grid , zone : value , opacity}));
+  };
+  const setOpacity = (value) => {
+    dispatch(setStatusCurrent({grid , zone , opacity : value}));
+  }
+  const setShowGrid = (value) => {
+    dispatch(setStatusCurrent({grid : value , zone , opacity}));
+  };
   return (
-    <>
-    {/* Left Sidebar - Controls */}
-        <div className="col-span-2 space-y-4">
-          {/* Date & Store Selection */}
-          <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
-            <h3 className="text-sm font-semibold text-gray-800 mb-3">Bộ lọc</h3>
-            
-            <div className="space-y-3">
-              <div>
-                <label className="text-xs text-gray-600 mb-1 block">Ngày</label>
-                <input 
-                  type="date" 
-                  value={selectedDate}
-                  onChange={(e) => setSelectedDate(e.target.value)}
-                  className="w-full bg-gray-50 text-gray-900 border border-gray-300 px-2 py-1.5 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                />
-              </div>
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200 h-full flex flex-col overflow-hidden">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {/* Date & Store Selection */}
+        <div className="space-y-3">
+          <h3 className="text-sm font-bold text-gray-800 uppercase tracking-wide">
+            Bộ lọc
+          </h3>
 
-              <div>
-                <label className="text-xs text-gray-600 mb-1 block">Cửa hàng</label>
-                <select 
-                  value={selectedStore}
-                  onChange={(e) => setSelectedStore(e.target.value)}
-                  className="w-full bg-gray-50 text-gray-900 border border-gray-300 px-2 py-1.5 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                >
-                  <option value="STORE001">STORE001</option>
-                  <option value="STORE002">STORE002</option>
-                  <option value="STORE003">STORE003</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="text-xs text-gray-600 mb-1 block">Camera</label>
-                <select 
-                  value={selectedCamera}
-                  onChange={(e) => setSelectedCamera(e.target.value)}
-                  className="w-full bg-gray-50 text-gray-900 border border-gray-300 px-2 py-1.5 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                >
-                  <option value="C01">C01 - Main</option>
-                  <option value="C02">C02 - Side</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          {/* Visualization Controls */}
-          <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
-            <h3 className="text-sm font-semibold text-gray-800 mb-3">Hiển thị</h3>
-            
-            <div className="space-y-3">
-              <label className="flex items-center gap-2 text-xs text-gray-700 cursor-pointer hover:text-gray-900">
-                <input 
-                  type="checkbox" 
-                  checked={showZones}
-                  onChange={(e) => setShowZones(e.target.checked)}
-                  className="w-4 h-4 accent-purple-600"
-                />
-                Ranh giới khu vực
-              </label>
-              
-              <label className="flex items-center gap-2 text-xs text-gray-700 cursor-pointer hover:text-gray-900">
-                <input 
-                  type="checkbox" 
-                  checked={showFlow}
-                  onChange={(e) => setShowFlow(e.target.checked)}
-                  className="w-4 h-4 accent-purple-600"
-                />
-                Luồng di chuyển
-              </label>
-
-              <label className="flex items-center gap-2 text-xs text-gray-700 cursor-pointer hover:text-gray-900">
-                <input 
-                  type="checkbox" 
-                  checked={showGrid}
-                  onChange={(e) => setShowGrid(e.target.checked)}
-                  className="w-4 h-4 accent-purple-600"
-                />
-                Lưới chia ô
-              </label>
-
-              <div className="pt-2 border-t border-gray-200">
-                <label className="text-xs text-gray-600 mb-2 block">Độ mờ: {opacity}%</label>
-                <input 
-                  type="range" 
-                  min="0" 
-                  max="100" 
-                  value={opacity}
-                  onChange={(e) => setOpacity(Number(e.target.value))}
-                  className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-purple-600"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Legend */}
-          <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
-            <h3 className="text-sm font-semibold text-gray-800 mb-3">Mức độ</h3>
-            <div className="space-y-2">
-              {[
-                { label: 'Rất cao', color: 'bg-red-500', range: '80+' },
-                { label: 'Cao', color: 'bg-orange-500', range: '60-80' },
-                { label: 'TB', color: 'bg-yellow-500', range: '40-60' },
-                { label: 'Thấp', color: 'bg-green-500', range: '20-40' },
-                { label: 'Rất thấp', color: 'bg-blue-500', range: '0-20' }
-              ].map((item, idx) => (
-                <div key={idx} className="flex items-center gap-2">
-                  <div className={`w-3 h-3 rounded ${item.color}`} />
-                  <span className="text-xs text-gray-700 flex-1">{item.label}</span>
-                  <span className="text-xs text-gray-500">{item.range}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Action Buttons */}
           <div className="space-y-2">
-            <button 
-              onClick={handleExport}
-              className="w-full flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 px-3 py-2 rounded-lg text-white text-sm font-medium transition shadow-sm"
+            <label className="block text-xs font-medium text-gray-700">
+              Ngày
+            </label>
+            <input
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              className="w-full bg-gray-50 text-gray-900 border border-gray-300 px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="block text-xs font-medium text-gray-700">
+              Cửa hàng
+            </label>
+            <select
+              value={selectedStore}
+              onChange={(e) => setSelectedStore(e.target.value)}
+              className="w-full bg-gray-50 text-gray-900 border border-gray-300 px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
             >
-              <Download size={16} />
-              Xuất PNG
-            </button>
-            
-            <button 
-              onClick={handleReset}
-              className="w-full flex items-center justify-center gap-2 bg-gray-200 hover:bg-gray-300 px-3 py-2 rounded-lg text-gray-700 text-sm font-medium transition"
+              <option value="STORE001">STORE001</option>
+              <option value="STORE002">STORE002</option>
+              <option value="STORE003">STORE003</option>
+            </select>
+          </div>
+
+          <div className="space-y-2">
+            <label className="block text-xs font-medium text-gray-700">
+              Camera
+            </label>
+            <select
+              value={selectedCamera}
+              onChange={(e) => setSelectedCamera(e.target.value)}
+              className="w-full bg-gray-50 text-gray-900 border border-gray-300 px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
             >
-              <RotateCcw size={16} />
-              Reset
-            </button>
+              <option value="C01">C01 - Main</option>
+              <option value="C02">C02 - Side</option>
+            </select>
           </div>
         </div>
-    </>
-  )
-}
+
+        {/* Visualization Controls */}
+        <div className="pt-4 border-t border-gray-200 space-y-3">
+          <h3 className="text-sm font-bold text-gray-800 uppercase tracking-wide">
+            Hiển thị
+          </h3>
+
+          <div className="space-y-3">
+            <label className="flex items-center gap-3 cursor-pointer group">
+              <input
+                type="checkbox"
+                checked={zone}
+                onChange={(e) => setShowZones(e.target.checked)}
+                className="w-4 h-4 accent-purple-600 cursor-pointer"
+              />
+              <span className="text-sm text-gray-700 group-hover:text-gray-900 transition">
+                Ranh giới khu vực
+              </span>
+            </label>
+
+            <label className="flex items-center gap-3 cursor-pointer group">
+              <input
+                type="checkbox"
+                checked={grid}
+                onChange={(e) => setShowGrid(e.target.checked)}
+                className="w-4 h-4 accent-purple-600 cursor-pointer"
+              />
+              <span className="text-sm text-gray-700 group-hover:text-gray-900 transition">
+                Lưới chia ô
+              </span>
+            </label>
+          </div>
+
+          <div className="pt-2 space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-medium text-gray-700">Độ mờ</label>
+              <span className="text-xs font-semibold text-purple-600 bg-purple-50 px-2 py-0.5 rounded">
+                {opacity}%
+              </span>
+            </div>
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value={opacity}
+              onInput={(e) => setOpacity(parseFloat(e.target.value))}
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-purple-600"
+            />
+          </div>
+        </div>
+
+        
+      </div>
+      {/* Action Buttons - Fixed at bottom */}
+      <div className="p-4 border-t border-gray-200 bg-gray-50 space-y-2">
+        <button
+          onClick={handleExport}
+          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition shadow-sm font-medium text-sm"
+        >
+          <Download size={16} />
+          Xuất PNG
+        </button>
+        <button
+          onClick={handleReset}
+          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 rounded-lg transition font-medium text-sm"
+        >
+          <RotateCcw size={16} />
+          Reset
+        </button>
+      </div>
+    </div>
+  );
+};
+
 export default LeftSidebar;

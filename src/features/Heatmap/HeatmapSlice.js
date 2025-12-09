@@ -4,63 +4,60 @@ import { formatVietnamTime } from "../../utils/formatVietNam";
 const HeatmapSlice = createSlice({
   name: "heatmap",
   initialState: {
-    storeId: null,
-    camereCode: null,
+    cameraCode: "",
+    storeId: "",
     infoHeatmapMatrix: [],
-    metricHeatmapWithZone: [],
+    statusCurrent : {
+      grid : true,
+      zone : true,
+      opacity : 70
+    },
     isLoading: false,
   },
-  reducers: {},
+  reducers: {
+    setStatusCurrent: (state, action) => {
+      state.statusCurrent = action.payload;
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchMatrixHeatmap.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(fetchMatrixHeatmap.fulfilled, (state, action) => {
+       
+        const heatmapData = action.payload.heatmap;
+        const { background_image, zones } = action.payload.zone_information;
         state.infoHeatmapMatrix = [];
-        for (const item of action.payload) {
-          const matrixHouse = {
-            cameraCode: item.camera_code,
-            storeId: item.store_id,
-            hour: formatVietnamTime(item.time_stamp),
-            withMaxtrix: item.width_matrix,
-            heightMatrix: item.height_matrix,
-            gridSize: item.grid_size,
-            withFrame: item.frame_width,
-            heightFrame: item.frame_height,
-            heatmapMatrix: item.heatmap_matrix,
+        for (const item of heatmapData) {
+          const {
+            camera_code,
+            store_id,
+            time_stamp,
+            grid_size,
+            frame_width,
+            frame_height,
+            heatmap_matrix,
+          } = item;
+          state.cameraCode = camera_code;
+          state.storeId = store_id;
+          let newInfor = {
+            timeStamp: formatVietnamTime(time_stamp),
+            gridSize: grid_size,
+            frameWidth: frame_width,
+            frameHeight: frame_height,
+            heatmapMatrix: heatmap_matrix,
+            backgroundImage: background_image,
+            zones: [...zones],
           };
-          state.infoHeatmapMatrix.push(matrixHouse);
+          state.infoHeatmapMatrix.push(newInfor);
+           state.isLoading = false;
         }
-        state.isLoading = false;
       })
-      .addCase(fetchMatrixHeatmap.rejected, (state, action) => {
+      .addCase(fetchMatrixHeatmap.rejected, (state) => {
         state.isLoading = false;
-        state.error = action.payload;
-      })
-      .addCase(fetchMetricsHeatmap.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(fetchMetricsHeatmap.fulfilled, (state, action) => {
-        state.metricHeatmapWithZone = [];
-        for (const item of action.payload) {
-          const newMetric = {
-            cameraCode: item.camera_code,
-            storeId: item.store_id,
-            zoneId: item.zone_id,
-            categoryName: item.category_name,
-            Trend: item.trend,
-            TraficFlowTimeline: item.traffic_flow_timeline,
-          };
-          state.metricHeatmapWithZone.push(newMetric);
-        }
-
-        state.isLoading = false;
-      })
-      .addCase(fetchMetricsHeatmap.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload;
       });
   },
 });
+export const { setStatusCurrent } = HeatmapSlice.actions;
 export default HeatmapSlice.reducer;

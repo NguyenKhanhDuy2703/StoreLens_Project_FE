@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import LeftSidebar from './components/LeftSidebar';
-import HeatMapContent from './components/HeatMapContent';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchMatrixHeatmap, fetchMetricsHeatmap } from "../Heatmap/heatmap.thunk"
+import HeatmapCanvas from './components/HeatMapContent';
 
 const ZoneHeatmapDashboard = () => {
   const [opacity, setOpacity] = useState(70);
@@ -13,13 +13,12 @@ const ZoneHeatmapDashboard = () => {
   const dispatch = useDispatch();
   
   useEffect(() => {
-    // dispatch(fetchMatrixHeatmap({ storeId: "STORE001", cameraCode: "C01", range: "today" }));
-    // dispatch(fetchMetricsHeatmap({ storeId: "STORE001", cameraCode: "C01", range: "today" }));
+    dispatch(fetchMatrixHeatmap({ storeId: "STORE001", cameraCode: "C01", range: "today" }));
   }, [dispatch]);
   
   const dataHeatmap = useSelector((state) => state.heatmap);
-  const { infoHeatmapMatrix, metricHeatmapWithZone, isLoading } = dataHeatmap;
-  
+  const {infoHeatmapMatrix , storeId , cameraCode ,isLoading  } = dataHeatmap;
+
   const handleExport = () => {
     alert('Tính năng chưa phát triển xong');
   }
@@ -37,10 +36,7 @@ const ZoneHeatmapDashboard = () => {
         {/* Left Sidebar - Width cố định */}
         <div className="w-80 flex-shrink-0">
           <LeftSidebar 
-            showZones={showZones} 
-            showFlow={showFlow} 
-            showGrid={showGrid} 
-            opacity={opacity} 
+  
             handleExport={handleExport}  
             handleReset={handleReset}
           />
@@ -48,7 +44,7 @@ const ZoneHeatmapDashboard = () => {
 
         {/* Center - Heatmap chiếm phần còn lại */}
         <div className="flex-1 min-w-0">
-          <HeatMapContent heatmap={infoHeatmapMatrix} />
+          <HeatmapCanvas infoHeatmapMatrix={infoHeatmapMatrix}  storeId = {storeId} cameraCode = {cameraCode} isLoading = {isLoading}  />
         </div>
       </div>
     </div>

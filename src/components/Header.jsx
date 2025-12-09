@@ -76,7 +76,7 @@ const handleLogout = async () => {
                   {userRole === "admin" && (
                     <>
                       <div className="my-2 border-t border-gray-200"></div>
-                      <MenuItem icon={Video} label="Quản lý Camera" />
+                      <MenuItem icon={Video} label="Quản lý Camera" onClick={() => navigate("/quan-ly-cameras")} />
                       <MenuItem icon={UserPlus}  label="Quản lý tài khoản " onClick={() => navigate("/quan-ly-nguoi-dung") }/>
                     </>
                   )}
