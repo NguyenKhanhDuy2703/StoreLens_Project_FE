@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import EmptyState from '../../../components/common/EmptyState';
 
 // Hàm format thời gian (2.5 -> 2m 30s)
 const formatDuration = (val) => {
@@ -19,7 +20,11 @@ const TableDownTime = () => {
   }
 
   if (!list || list.length === 0) {
-    return <div className="p-6 text-center text-gray-500 bg-white rounded-xl border border-slate-100">Chưa có dữ liệu bảng.</div>;
+    return (
+      <div className="h-full w-full  flex items-center justify-center ">
+        <EmptyState size='large' />
+      </div>
+    )
   }
 
   return (

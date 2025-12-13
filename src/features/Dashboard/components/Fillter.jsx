@@ -4,27 +4,23 @@ import { fetchImportInvoice } from "../dashboard.thunk";
 
 import {
   Calendar,
-  // RefreshCw,
   Download,
   ChevronDown,
   Database,
   Upload,
 } from "lucide-react";
-
-// 3. Nhận Props từ Dashboard cha thay vì tự khai báo useState nội bộ
+import {setSelectStore} from "../../ManagerUser/userSlice"
 export default function StoreFilter({ 
   selectedStore, 
-  setSelectedStore, 
   timeRange, 
-  setTimeRange 
+  setTimeRange,
+  informationStores
 }) {
-  const dispatch = useDispatch(); // Khởi tạo dispatch
-  const fileInputRef = useRef(null); // Tạo Ref cho thẻ input file
-
-  // State loading cho các nút hành động
+  const dispatch = useDispatch(); 
+  const fileInputRef = useRef(null); 
   const [isSyncing, setIsSyncing] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
-
+  
   const timeRangeOptions = [
     { value: "today", label: "Hôm nay" },
     { value: "yesterday", label: "Hôm qua" },
@@ -34,46 +30,28 @@ export default function StoreFilter({
     { value: "year", label: "Năm nay" },
     { value: "custom", label: "Tùy chỉnh" },
   ];
-
-  const storeOptions = [
-    // Lưu ý: Value phải khớp với Store ID trong Database
-    { value: "all", label: "Tất cả cửa hàng" },
-    { value: "STORE001", label: "Cửa hàng Hải Châu" },
-    { value: "STORE002", label: "Cửa hàng Thanh Khê" },
-    { value: "STORE003", label: "Cửa hàng Sơn Trà" },
-    { value: "STORE004", label: "Cửa hàng Ngũ Hành Sơn" },
-  ];
-
-  // --- LOGIC MỚI: XỬ LÝ IMPORT FILE ---
-  
-  // 1. Hàm bấm nút "Import POS" -> Kích hoạt thẻ input ẩn
   const handleImportPOS = () => {
     if (selectedStore === "all") {
       alert("⚠️ Vui lòng chọn một cửa hàng cụ thể để Import dữ liệu!");
       return;
     }
-    // Reset giá trị input để cho phép chọn lại cùng 1 file
     if (fileInputRef.current) {
       fileInputRef.current.value = ""; 
       fileInputRef.current.click();
     }
   };
-
-  // 2. Hàm xử lý khi người dùng chọn file xong
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
 
-    // Validate đuôi file Excel
     if (!file.name.match(/\.(xlsx|xls)$/)) {
       alert("❌ Chỉ chấp nhận file Excel (.xlsx, .xls)");
       return;
     }
 
-    setIsImporting(true); // Bật loading
+    setIsImporting(true); 
 
     try {
-      // Gọi Redux Thunk gửi file lên Server
       const resultAction = await dispatch(
         fetchImportInvoice({
           storeId: selectedStore,
@@ -81,11 +59,9 @@ export default function StoreFilter({
         })
       );
 
-      // Kiểm tra kết quả trả về từ Backend
       if (fetchImportInvoice.fulfilled.match(resultAction)) {
         const count = resultAction.payload.count;
         alert(`✅ Import thành công ${count} hóa đơn!`);
-        // Tại đây bạn có thể gọi thêm logic reload lại Dashboard nếu cần
       } else {
         alert(`❌ Lỗi: ${resultAction.payload}`);
       }
@@ -109,10 +85,11 @@ export default function StoreFilter({
   const handleExport = () => {
     alert("Đang xuất báo cáo...");
   };
-
+const selectStoreFillter = (e) => {
+  dispatch(setSelectStore(JSON.parse(e)));
+}
   const ActionButtons = () => (
     <div className="flex gap-3">
-      {/* THẺ INPUT FILE ẨN (MAGIC INPUT) */}
       <input
         type="file"
         ref={fileInputRef}
@@ -169,12 +146,12 @@ export default function StoreFilter({
           <div className="relative">
             <select
               value={selectedStore}
-              onChange={(e) => setSelectedStore(e.target.value)}
+              onChange={(e) => selectStoreFillter(e.target.value)}
               className="w-full appearance-none bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-700 focus:ring-2 focus:ring-blue-500 cursor-pointer"
             >
-              {storeOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
+              {informationStores?.map((option) => (
+                <option key={option.store_id} value={JSON.stringify({storeId : option.store_id , storeName: option.store_name})}>
+                  {option.store_name}
                 </option>
               ))}
             </select>
@@ -184,8 +161,6 @@ export default function StoreFilter({
             />
           </div>
         </div>
-
-        {/* Time Range Filter */}
         <div className="flex-1 flex flex-col gap-2">
           <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
             <Calendar size={16} className="text-blue-500" />

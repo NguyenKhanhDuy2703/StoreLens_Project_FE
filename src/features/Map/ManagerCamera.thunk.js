@@ -2,20 +2,23 @@ import {createAsyncThunk} from '@reduxjs/toolkit'
 import { getListCamerasWithZones , postZoneforCamera } from "../../services/cameraManagement";
 export const fetchCamerasWithZones = createAsyncThunk(
     'cameras/fetchCamerasWithZones',
-    async (type, thunkAPI) => {
+    async (storeId, thunkAPI) => {
+        
         try {
-            const response = await getListCamerasWithZones(type);
-            console.log("Fetched cameras with zones:", response);
+            const response = await getListCamerasWithZones(storeId);
             const cameras = response?.map ( (cam) => {
                 return {
                     storeId : cam.store_id,   
                     cameraCode : cam.camera_code,
                     cameraName : cam.camera_name,
                     cameraSpec : cam.camera_spec,
+                    status : cam.status,
+                    location : cam.location,
+                    installationDate : cam.installation_date,
+                    maintenanceDate : cam.maintenance_date,
                     rtspUrl : cam.rtsp_url,
                 }
             })
-           console.log("Cameras mapped:", cameras);
             const zones = response?.map ( (item) => {
                 if(!item.zones_info) {
                     return {
@@ -26,7 +29,6 @@ export const fetchCamerasWithZones = createAsyncThunk(
                         zones : []
                     }
 
-                
                 }
                 return {
                     cameraCode : item.camera_code,

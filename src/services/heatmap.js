@@ -6,6 +6,7 @@ const getHeatmapData = async ({ storeId, cameraCode, range }) => {
       params: {
         store_id: storeId,
         camera_code: cameraCode,
+        range: range,
       },
     });
     return response.data.data;

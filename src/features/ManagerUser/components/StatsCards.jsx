@@ -1,44 +1,49 @@
-import React from "react";
-import { User, CheckCircle, Lock } from "lucide-react";
+import "react-toastify/dist/ReactToastify.css";
+import {
+  CheckCircle,
+  Lock,
+  User,
+ 
+} from "lucide-react";
 
+
+// StatsCards Component
 const StatsCards = ({ stats }) => {
   const cards = [
-    { title: "Tổng", value: stats.total, icon: User, color: "blue" },
+    { title: "Tổng số", value: stats.total, icon: User, color: "blue" },
     { title: "Hoạt động", value: stats.active, icon: CheckCircle, color: "green" },
     { title: "Đã khóa", value: stats.inactive, icon: Lock, color: "red" },
   ];
 
   const colorClasses = {
-    blue: "bg-gradient-to-br from-blue-500 to-blue-600",
-    green: "bg-gradient-to-br from-green-500 to-green-600",
-    red: "bg-gradient-to-br from-red-500 to-red-600",
+    blue: "from-blue-500 to-blue-600",
+    green: "from-green-500 to-green-600",
+    red: "from-red-500 to-red-600",
   };
 
   return (
-    <div className="flex flex-col md:flex-row gap-6 w-full">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
       {cards.map((card) => (
         <div
           key={card.title}
-          className="flex-1 bg-white rounded-2xl p-6 border border-gray-100 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 flex items-center gap-6"
+          className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 border border-gray-100"
         >
-          {/* Icon lớn */}
-          <div
-            className={`p-5 rounded-xl ${colorClasses[card.color]} shadow-md flex items-center justify-center`}
-          >
-            <card.icon className="w-10 h-10 text-white" />
-          </div>
-
-          {/* Text lớn */}
-          <div className="flex flex-col">
-            <span className="text-gray-500 text-sm font-semibold uppercase tracking-wide">
-              {card.title}
-            </span>
-            <span className="text-3xl md:text-4xl font-bold text-gray-900">{card.value}</span>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-500 mb-1">
+                {card.title}
+              </p>
+              <p className="text-3xl font-bold text-gray-900">{card.value}</p>
+            </div>
+            <div
+              className={`p-4 rounded-xl bg-gradient-to-br ${colorClasses[card.color]} shadow-md`}
+            >
+              <card.icon className="w-8 h-8 text-white" />
+            </div>
           </div>
         </div>
       ))}
     </div>
   );
 };
-
 export default StatsCards;

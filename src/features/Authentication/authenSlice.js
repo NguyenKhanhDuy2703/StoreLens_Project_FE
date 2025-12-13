@@ -12,10 +12,8 @@ const authenSlice = createSlice({
     user: null,
     account: null,
     isLoading: false,
-
-    // Trạng thái auth
-    isLogin: null,         // null = chưa biết, true = login, false = chưa login
-    isChecking: true,      // đang kiểm tra token
+    isLogin: null,        
+    isChecking: true,      
 
     error: null,
   },
@@ -24,7 +22,6 @@ const authenSlice = createSlice({
 
   extraReducers: (builder) => {
     builder
-      // 🔹 Kiểm tra token
       .addCase(fecthGetToken.pending, (state) => {
         state.isChecking = true;
         state.isLoading = true;
@@ -43,8 +40,6 @@ const authenSlice = createSlice({
         state.isLogin = false;
         state.error = action.payload;
       })
-
-      // 🔹 Login
       .addCase(fecthLogin.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -60,8 +55,6 @@ const authenSlice = createSlice({
         state.isLogin = false;
         state.error = action.payload;
       })
-
-      // 🔹 Sign up
       .addCase(fecthSignup.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = action.payload.user;
@@ -71,8 +64,6 @@ const authenSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload;
       })
-
-      // 🔹 Logout
       .addCase(fecthLogout.fulfilled, (state) => {
         state.user = null;
         state.account = null;

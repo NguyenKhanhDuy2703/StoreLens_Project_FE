@@ -30,9 +30,6 @@ const StoreLensDashboard = () => {
     conversionRate,
     avgOrderValue,
     avgSessionDuration,
-    customerCurrent,
-    checkoutLength,
-    peakHours,
     isLoading,
   } = useSelector((state) => state.dashboard.metrics);
   const dataCharts = useSelector((state) => state.dashboard.trafficData);
@@ -40,6 +37,7 @@ const StoreLensDashboard = () => {
   const zonePerformance = useSelector(
     (state) => state.dashboard.performaceZone
   );
+  const {informationStores} = useSelector((state) => state.user);
   useEffect(() => {
     (async () => {
       dispatch(fecthGetStatusMetrics({ storeId, range }));
@@ -58,7 +56,7 @@ const StoreLensDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
-      <StoreFilter />
+      <StoreFilter informationStores = {informationStores}/>
       {/* Thẻ KPI */}
       <div className="grid grid-cols-5 gap-5 mb-8">
         <KPICard
