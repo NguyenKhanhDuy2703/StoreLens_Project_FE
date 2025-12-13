@@ -31,3 +31,14 @@ export const activateUser = async (userId) => {
     throw new Error(error.response?.data?.message || "Failed to activate user");
   }
 };
+export const getListStoreForUser = async ({email  , role}) => {
+  try {
+    const response = await axiosInstance.get(`${BASE_URL}/store`, {
+      params: { email : email  , role : role }, 
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error in getListStoreForUser:", error);
+    throw new Error(error.response?.data?.message || "Failed to get stores for user");
+  }
+}

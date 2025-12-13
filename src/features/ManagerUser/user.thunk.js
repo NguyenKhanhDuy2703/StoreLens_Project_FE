@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { getAllUsers, banUser, activateUser } from "../../services/user.api";
+import { getAllUsers, banUser, activateUser , getListStoreForUser } from "../../services/user.api";
 
 // Lấy danh sách user
 export const fetchAllUsers = createAsyncThunk(
@@ -34,6 +34,18 @@ export const fetchActivateUser = createAsyncThunk(
     try {
       const res = await activateUser(userId);
       return res.data.user;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+export const fetchListStoreForUser = createAsyncThunk(
+  "user/fetchListStoreForUser",
+  async ({email , role}, thunkAPI) => {  
+    try {
+      const res = await getListStoreForUser({email,role});
+    
+      return  res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }

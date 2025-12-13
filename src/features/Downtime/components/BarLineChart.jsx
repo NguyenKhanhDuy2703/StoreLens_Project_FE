@@ -9,9 +9,10 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer
-  // Đã xóa Defs, LinearGradient, Stop ở đây để tránh lỗi
+
 } from 'recharts';
 import { useSelector } from 'react-redux';
+import EmptyState from '../../../components/common/EmptyState';
 
 const BarLineChart = () => {
   const downtimeState = useSelector((state) => state.downtime);
@@ -27,8 +28,8 @@ const BarLineChart = () => {
 
   if (!data || data.length === 0) {
     return (
-      <div className="h-full flex items-center justify-center bg-white rounded-xl border border-slate-100 shadow-sm">
-        <span className="text-slate-400 text-sm">Chưa có dữ liệu hiển thị.</span>
+      <div className="h-full w-full  flex items-center justify-center ">
+        <EmptyState size='large' />
       </div>
     );
   }

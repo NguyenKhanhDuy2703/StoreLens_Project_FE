@@ -1,8 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchAllUsers, fetchBanUser, fetchActivateUser } from "./user.thunk";
+import { fetchAllUsers, fetchBanUser, fetchActivateUser , fetchListStoreForUser } from "./user.thunk";
 
 const initialState = {
   users: [],
+  informationStores: [],
+  selectStore: {
+    storeId:"",
+    storeName:""
+  },
   isLoading: false,
   error: null,
 };
@@ -10,7 +15,13 @@ const initialState = {
 const userSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {},
+  reducers: {
+    setSelectStore: (state, action) => {
+      const { storeId, storeName } = action.payload;
+      state.selectStore.storeId = storeId
+      state.selectStore.storeName = storeName
+    }
+  },
   extraReducers: (builder) => {
     // --- fetchAllUsers ---
     builder
@@ -59,8 +70,29 @@ const userSlice = createSlice({
       .addCase(fetchActivateUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
-      });
+      })
+      .addCase(fetchListStoreForUser.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchListStoreForUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.informationStores = action.payload.listStore;
+        if (action.payload.role === "admin") {
+          state.selectStore.storeId = "admin";
+          state.selectStore.storeName = "admin";
+          return;
+        }
+        const {store_id, store_name} = action.payload.listStore[0]|| {};
+        state.selectStore.storeId = store_id || "";
+        state.selectStore.storeName = store_name || "";
+
+      })
+      .addCase(fetchListStoreForUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
   },
 });
-
+export const { setSelectStore } = userSlice.actions;
 export default userSlice.reducer;

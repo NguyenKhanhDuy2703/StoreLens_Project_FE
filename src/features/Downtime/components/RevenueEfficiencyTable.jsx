@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { TrendingUp, AlertTriangle, CheckCircle, Moon, Zap, Star } from 'lucide-react';
+import EmptyState from '../../../components/common/EmptyState';
 
 // --- 1. HELPER FUNCTIONS ---
 const formatCurrency = (value) => {
@@ -64,7 +65,11 @@ const RevenueEfficiencyTable = () => {
   }
 
   if (!data || data.length === 0) {
-    return <div className="h-64 flex items-center justify-center bg-white rounded-xl border border-slate-100 text-slate-400">Chưa có dữ liệu bảng.</div>;
+    return (
+      <div className="h-full w-full  r ">
+        <EmptyState size='large'  />
+      </div>
+    )
   }
 
   return (

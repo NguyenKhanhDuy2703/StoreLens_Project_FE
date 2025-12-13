@@ -1,9 +1,7 @@
 import { Download, RotateCcw } from "lucide-react";
-import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setStatusCurrent } from "../HeatmapSlice";
 const LeftSidebar = ({
-
   selectedDate,
   setSelectedDate,
   selectedStore,
@@ -24,6 +22,7 @@ const LeftSidebar = ({
   const setShowGrid = (value) => {
     dispatch(setStatusCurrent({grid : value , zone , opacity}));
   };
+const today = new Date().toISOString().split("T")[0];
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 h-full flex flex-col overflow-hidden">
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
@@ -39,7 +38,7 @@ const LeftSidebar = ({
             </label>
             <input
               type="date"
-              value={selectedDate}
+              value={selectedDate || today}
               onChange={(e) => setSelectedDate(e.target.value)}
               className="w-full bg-gray-50 text-gray-900 border border-gray-300 px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
             />
@@ -69,8 +68,8 @@ const LeftSidebar = ({
               onChange={(e) => setSelectedCamera(e.target.value)}
               className="w-full bg-gray-50 text-gray-900 border border-gray-300 px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
             >
-              <option value="C01">C01 - Main</option>
-              <option value="C02">C02 - Side</option>
+              <option value="C01">C01 </option>
+              <option value="C02">C02 </option>
             </select>
           </div>
         </div>

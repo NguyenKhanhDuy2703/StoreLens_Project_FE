@@ -9,26 +9,13 @@ const fetchMatrixHeatmap = createAsyncThunk(
         cameraCode,
         range,
       });
+      console.log("Fetched heatmap data:", response);
       return response;
     } catch (error) {
+      console.error("Error fetching heatmap data:", error);
       return thunkAPI.rejectWithValue("Failed to fetch heatmap data");
     }
   }
 );
-const fetchMetricsHeatmap = createAsyncThunk(
-  "heatmap/fetchMetricsHeatmap",
-  async ({ storeId, cameraCode, range, thunkAPI }) => {
-    try {
-      const response = await getMetricsHeatmap({
-        storeId,
-        cameraCode,
-        range,
-      });
-      
-      return response;
-    } catch (error) {
-      return thunkAPI.rejectWithValue("Failed to fetch heatmap data");
-    }
-  }
-);
-export { fetchMatrixHeatmap ,fetchMetricsHeatmap };
+
+export { fetchMatrixHeatmap  };

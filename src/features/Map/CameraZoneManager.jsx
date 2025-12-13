@@ -27,10 +27,14 @@ const CameraZoneManager = () => {
   const stageRef = useRef(null);
   const [isEditing, setIsEditing] = useState(false);
   const [loadingImage, setLoadingImage] = useState(false);
-
+  const {selectStore} = useSelector((state) => state.user);
+  console.log("Selected Store in CameraZoneManager:", selectStore);
   useEffect(() => {
-    dispatch(fetchCamerasWithZones(""));
-  }, []);
+    if (selectStore?.storeId){
+        dispatch(fetchCamerasWithZones(selectStore?.storeId));
+    }
+    
+  }, [dispatch, selectStore]);
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
