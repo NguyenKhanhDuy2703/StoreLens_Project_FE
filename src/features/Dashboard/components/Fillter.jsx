@@ -13,12 +13,11 @@ import {setSelectStore} from "../../ManagerUser/userSlice"
 import toast from "react-hot-toast";
 export default function StoreFilter({ 
   selectedStore, 
-  timeRange, 
-  setTimeRange,
   informationStores
 }) {
   const dispatch = useDispatch(); 
   const fileInputRef = useRef(null); 
+  const [timeRange, setTimeRange] = useState("today");
   const [isSyncing, setIsSyncing] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
   
@@ -77,17 +76,21 @@ export default function StoreFilter({
     setIsSyncing(true);
     const fetchAsyncData = async( storeId , range ) => {
        try {
-          const res = await getAsyncAPI({storeId , range});
+        console.log(storeId , range);
+          const res = await getAsyncAPI({storeId , range  });
           toast.success("✅ Đồng bộ dữ liệu thành công!");
           setIsSyncing(false);
           return res;
        } catch (error) {
           console.error("Lỗi đồng bộ dữ liệu:", error);
+       }finally{
+          setIsSyncing(false);
        }
     }
     
-    fetchAsyncData(informationStores.store_id);
+    fetchAsyncData(informationStores[0].store_id ,timeRange);
   };
+  
 
   const handleExport = () => {
     alert("Đang xuất báo cáo...");
@@ -137,6 +140,7 @@ const selectStoreFillter = (e) => {
       </button>
     </div>
   );
+ 
 
   return (
     <div className="w-full bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-3">

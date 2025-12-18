@@ -22,7 +22,7 @@ const {selectStore} = useSelector((state) => state.user);
     if (user && user.email) {
       dispatch(fetchListStoreForUser({ email: user.email  , role : user.role}));
     }
-  }, [dispatch, user]);
+  }, [dispatch, user ]);
   useEffect(() => {
     if (!isChecking && isLogin === false) {
       navigate("/auth/signin");

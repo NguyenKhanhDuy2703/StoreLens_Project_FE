@@ -2,14 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import EmptyState from '../../../components/common/EmptyState';
-
-// Hàm format thời gian (2.5 -> 2m 30s)
-const formatDuration = (val) => {
-  if (!val) return "0s";
-  const m = Math.floor(val);
-  const s = Math.round((val - m) * 60);
-  return `${m}m ${s}s`;
-};
+import { formatSeconds  } from '../../../utils/formatSec';
 
 const TableDownTime = () => {
   // Lấy dữ liệu từ Redux
@@ -72,7 +65,7 @@ const TableDownTime = () => {
 
                   {/* Thời gian TB */}
                   <td className="px-6 py-4 text-slate-600 font-medium">
-                    {formatDuration(row.avgTime)}
+                    {formatSeconds(row.avgTime)+"s"}
                   </td>
 
                   {/* Số lượt dừng */}
