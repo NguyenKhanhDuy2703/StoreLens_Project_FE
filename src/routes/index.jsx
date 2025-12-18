@@ -3,7 +3,7 @@ import MainLayout from "../layouts/MainLayout";
 import Dashboard from "../features/Dashboard/Dashboard";
 import Heatmap from "../features/Heatmap/Heatmap";
 import Downtime from "../features/Downtime/Downtime";
-import ProductManagement from "../features/ProductManagement/ProductManagement";
+
 
 import CameraZoneManager from "../features/Map/CameraZoneManager";
 import GazeAnalysisDashboard from "../features/Gaze_Analysis/Gaze_Analysis";
@@ -13,6 +13,7 @@ import AuthenticationLayout from "../features/Authentication/AuthenticationLayou
 import ManagerCameras from "../features/ManagerCamera/ManagerCameras";
 import ManagerUser from "../features/ManagerUser/ManagerUsers";
 import NotFound from "../components/common/NotFound";
+import ProductManagement from "../features/ProductManagement/ManagementProduct";
 
 const AppRouter = () => {
   return (

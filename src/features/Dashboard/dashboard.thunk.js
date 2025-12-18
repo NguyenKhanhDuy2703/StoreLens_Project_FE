@@ -57,6 +57,7 @@ export const fetchGetZonePerformance = createAsyncThunk(
         storeId,
         range,
       });
+      console
       return response;
     } catch (error) {
       return thunkAPI.rejectWithValue("Failed to fetch zone performance");

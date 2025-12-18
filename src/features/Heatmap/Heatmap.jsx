@@ -8,14 +8,14 @@ const ZoneHeatmapDashboard = () => {
   
 
   const dispatch = useDispatch();
+  const {selectStore  , cameraSelected} = useSelector((state) => state.user);
   
   useEffect(() => {
-    dispatch(fetchMatrixHeatmap({ storeId: "STORE001", cameraCode: "C01", range: "today" }));
-  }, [dispatch]);
+      dispatch(fetchMatrixHeatmap({ storeId: selectStore?.storeId, cameraCode: cameraSelected, range: "today" })); 
+  }, [dispatch , selectStore , cameraSelected ]);
   
   const dataHeatmap = useSelector((state) => state.heatmap);
   const {infoHeatmapMatrix , storeId , cameraCode , isLoading  , timeLine  , startTimeLine} = dataHeatmap;
-
   const handleExport = () => {
     alert('Tính năng chưa phát triển xong');
   }

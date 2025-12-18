@@ -1,95 +1,62 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getProducts } from '../../services/product.api'; 
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { fetchGetCategories , fetchGetProducts } from "./products.thunk";
 
-// Khởi tạo trạng thái ban đầu cho các bộ lọc
-const initialState = {
+const productSlice = createSlice({
+  name: "product",
+  initialState: {
     products: [],
     totalItems: 0,
     totalPages: 1,
     currentPage: 1,
-    loading: false, 
+    limit : 10,
+    categories: [],
+    loading: false,
     error: null,
-    
-    // TRẠNG THÁI LỌC
-    filters: {
-        store_id: 'STORE001',             
-        status: 'all',      
-        categories: '',     
-        id: ''          
-    }
-};
+  },
+  reducers: {
+    prevPage(state) {
+      if (state.currentPage > 1) {
+        state.currentPage -= 1;
+      }},
+    nextPage(state) {
+        if (state.currentPage < state.totalPages) {
+            state.currentPage += 1;
+        }}
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchGetProducts.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchGetProducts.fulfilled, (state, action) => {
+        state.loading = false;
+        state.products = action.payload.data;
+        state.totalItems = action.payload.pagination.totalProducts;
+        state.totalPages = action.payload.pagination.totalPages;
+        state.currentPage = action.payload.pagination.page;
+        state.limit = action.payload.pagination.limit;
+      }
+        )
+        .addCase(fetchGetProducts.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        })
 
-// =========================================================
-// ASYNC THUNK
-// =========================================================
-export const fetchProducts = createAsyncThunk(    
-    'product/fetchProducts',
-    async (params, thunkAPI) => {
-        try {
-            const response = await getProducts(params);
-            return response; 
-        } catch (error) {
-            return thunkAPI.rejectWithValue({ 
-                message: 'Failed to fetch products', 
-                error: error.message 
-            });
-        }
-    }
-);
+      .addCase(fetchGetCategories.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchGetCategories.fulfilled, (state, action) => {
+        state.loading = false;
+        state.categories = action.payload;
+      })
+      .addCase(fetchGetCategories.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+  },
+});
 
-
-// =========================================================
-// SLICE
-// =========================================================
-const productSlice = createSlice({
-    name: 'product',
-    initialState,
-
-    reducers: {
-        setFilters: (state, action) => {
-            state.filters = { ...state.filters, ...action.payload };
-        },
-        setCurrentPage: (state, action) => {
-            state.currentPage = action.payload;
-        }
-    },
-
-    extraReducers: (builder) => {
-        builder
-            // ------------------------------------
-            // Khi API đang chờ (PENDING)
-            // ------------------------------------
-            .addCase(fetchProducts.pending, (state) => {
-                state.loading = true; 
-                state.error = null;
-            })
-            // ------------------------------------
-            // Khi API thành công (FULFILLED)
-            // ------------------------------------
-            .addCase(fetchProducts.fulfilled, (state, action) => {
-                console.log('Product list fetched successfully.');
-                const payload = action.payload;
-                
-                state.products = payload.data || [];
-                if (payload.pagination) {
-                    state.totalItems = payload.pagination.totalItems;
-                }
-                else {
-                    state.totalItems = state.products.length;
-                }
-                state.loading = false;
-            })
-            // ------------------------------------
-            // Khi API thất bại (REJECTED)
-            // ------------------------------------
-            .addCase(fetchProducts.rejected, (state, action) => {
-                console.error('Failed to fetch products:', action.payload.error);
-                state.loading = false;
-                state.error = action.payload ? action.payload.message : 'Lỗi không xác định.';
-                state.products = []; 
-            });
-    },
-}); 
-
-export const { setFilters, setCurrentPage } = productSlice.actions;
+export const { prevPage , nextPage } = productSlice.actions;
 export default productSlice.reducer;
