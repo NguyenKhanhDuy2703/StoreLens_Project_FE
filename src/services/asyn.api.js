@@ -6,7 +6,6 @@ export const getAsyncAPI = async ({storeId , range}) => {
        const resStore = await axiosInstance.get(urlAsyncStore, {
             params: {
                 storeId: storeId,
-                date : range
             }
         })
         const resZone = await axiosInstance.get(urlAsyncZone, {

@@ -1,17 +1,9 @@
-import React, { useMemo } from 'react';
+import  { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { TrendingUp, AlertTriangle, CheckCircle, Moon, Zap, Star } from 'lucide-react';
+import {  AlertTriangle, CheckCircle, Moon, Zap, Star } from 'lucide-react';
 import EmptyState from '../../../components/common/EmptyState';
-
-// --- 1. HELPER FUNCTIONS ---
-const formatCurrency = (value) => {
-  if (!value) return "0 đ";
-  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(value);
-};
-
-const formatTime = (val) => {
-  return val ? `${val} phút` : "0 phút";
-};
+import { formatCurrency } from '../../../utils/formatCurrency';
+import {formatSeconds} from "../../../utils/formatSec"
 
 // Map Type sang Icon và Style
 const STATUS_CONFIG = {
@@ -86,7 +78,7 @@ const RevenueEfficiencyTable = () => {
         <div className="text-right text-xs text-slate-500 bg-slate-50 px-4 py-2 rounded-lg border border-slate-100">
           <div className="flex justify-between gap-4 mb-1">
             <span>TB Thời gian:</span>
-            <span className="font-bold text-slate-700">{benchmarks?.avgTime?.toFixed(1)} phút</span>
+            <span className="font-bold text-slate-700">{benchmarks?.avgTime?.toFixed(1)} s</span>
           </div>
           <div className="flex justify-between gap-4">
             <span>TB Doanh thu:</span>
@@ -130,7 +122,7 @@ const RevenueEfficiencyTable = () => {
                   <td className="px-6 py-5">
                     <div className="w-full max-w-[160px]">
                       <div className="flex justify-between mb-1.5">
-                        <span className="font-semibold text-slate-700">{formatTime(row.avgTime)}</span>
+                        <span className="font-semibold text-slate-700">{formatSeconds(row.avgTime) +"s"}</span>
                       </div>
                       <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
                         <div 

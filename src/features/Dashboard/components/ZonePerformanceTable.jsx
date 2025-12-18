@@ -3,8 +3,11 @@ import {
   TrendingDown,
 } from 'lucide-react';
 import EmptyState from '../../../components/common/EmptyState';
+import { formatSeconds } from '../../../utils/formatSec';
 const ZonePerformanceTable = ({zonePerformance}) => {
+
   const isEmpty = !zonePerformance?.zones || zonePerformance?.zones.length === 0;
+  
   return (
     <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-lg">
       <div className="mb-6">
@@ -28,11 +31,11 @@ const ZonePerformanceTable = ({zonePerformance}) => {
               <tr key={index} className="border-b border-gray-100 hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50 transition-all duration-200">
                 <td className="py-4 px-4 text-gray-900 font-semibold text-sm">{zone.category_name}</td>
                 <td className="py-4 px-4 text-gray-700 text-sm font-medium">{zone.people_count}</td>
-                <td className="py-4 px-4 text-gray-700 text-sm font-medium">{zone.avg_dwell_time}</td>
+                <td className="py-4 px-4 text-gray-700 text-sm font-medium">{formatSeconds(zone.avg_dwell_time) +"s"}</td>
                 <td className="py-4 px-4 text-green-600 font-bold text-sm">{zone.total_sales_value}</td>
                 <td className="py-4 px-4 bg-gradient-to-r from-blue-50 to-indigo-50">
                   <span className="inline-flex items-center px-3 py-1 rounded-full text-blue-700 font-bold text-sm bg-white shadow-sm">
-                    {zone.conversion_rate}
+                    {Math.round(zone.conversion_rate)}%
                   </span>
                 </td>
                 <td className="py-4 px-4 text-center">

@@ -13,11 +13,11 @@ import {
 } from 'recharts';
 import { useSelector } from 'react-redux';
 import EmptyState from '../../../components/common/EmptyState';
+import { formatSeconds } from '../../../utils/formatSec';
 
 const BarLineChart = () => {
   const downtimeState = useSelector((state) => state.downtime);
   const { data, isLoading } = downtimeState.efficiencyChart || { data: [], isLoading: false };
-
   if (isLoading) {
     return (
       <div className="h-full flex items-center justify-center bg-white rounded-xl border border-slate-100 shadow-sm">
@@ -52,7 +52,7 @@ const BarLineChart = () => {
                 <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
                 <span className="text-slate-500">TG dừng</span>
               </div>
-              <span className="font-bold text-slate-700">{payload[1].value}p</span>
+              <span className="font-bold text-slate-700">{formatSeconds(payload[1].value)}</span>
             </div>
           </div>
         </div>
@@ -74,7 +74,6 @@ const BarLineChart = () => {
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={data} margin={{ top: 10, right: 0, bottom: 0, left: -20 }}>
             
-            {/* --- SỬ DỤNG THẺ SVG VIẾT THƯỜNG (Không cần import) --- */}
             <defs>
               <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="#3B82F6" stopOpacity={0.9}/>
@@ -102,6 +101,7 @@ const BarLineChart = () => {
               axisLine={false} 
               tickLine={false}
               tick={{ fill: '#94a3b8', fontSize: 11 }}
+
             />
             
             <YAxis 
@@ -110,7 +110,8 @@ const BarLineChart = () => {
               axisLine={false} 
               tickLine={false}
               tick={{ fill: '#94a3b8', fontSize: 11 }}
-              unit="p"
+              unit="s"
+              tickFormatter={formatSeconds}
             />
             
             <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(241, 245, 249, 0.6)' }} />

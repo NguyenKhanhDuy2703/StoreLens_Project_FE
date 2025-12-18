@@ -15,15 +15,7 @@ import StatCard from './components/StatCard';
 import BarLineChart from './components/BarLineChart';
 import ZoneTableDownTime from './components/ZoneTableDownTime';
 import RevenueEfficiency from './components/RevenueEfficiencyTable';
-
-
-// Hàm format thời gian
-const formatTime = (val) => {
-  if (!val) return "0m 0s";
-  const m = Math.floor(val);
-  const s = Math.round((val - m) * 60);
-  return `${m}m ${s}s`;
-};
+import {formatSeconds} from "../../utils/formatSec"
 
 const Downtime = () => {
   const dispatch = useDispatch();
@@ -51,21 +43,21 @@ const Downtime = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6">
         <StatCard 
             title="TG dừng TB lâu nhất" 
-            value={formatTime(kpis.max.value)} 
+            value={formatSeconds(kpis.max.value) } 
             subtitle={kpis.max.zone} 
             change={kpis.max.change} 
             icon={<Clock className="w-6 h-6" />} 
         />
         <StatCard 
             title="TG dừng TB ngắn nhất" 
-            value={formatTime(kpis.min.value)} 
+            value={formatSeconds(kpis.min.value)} 
             subtitle={kpis.min.zone} 
             change={kpis.min.change} 
             icon={<Zap className="w-6 h-6" />} 
         />
         <StatCard 
             title="TB toàn cửa hàng" 
-            value={formatTime(kpis.avg.value)} 
+            value={formatSeconds(kpis.avg.value)} 
             subtitle="Tất cả khu vực" 
             change={kpis.avg.change} 
             icon={<BarChart3 className="w-6 h-6" />} 
