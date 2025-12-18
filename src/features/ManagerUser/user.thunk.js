@@ -44,7 +44,6 @@ export const fetchListStoreForUser = createAsyncThunk(
   async ({email , role}, thunkAPI) => {  
     try {
       const res = await getListStoreForUser({email,role});
-    
       return  res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);

@@ -13,8 +13,19 @@ const CATEGORIES = [
   "Đồ ăn nhanh",
   "Khu vực nhân viên",
 ];
-
+import {useDispatch , useSelector} from "react-redux"
+import { useEffect } from "react";
+import { fetchGetCategories } from "../../ProductManagement/products.thunk";
 const ZoneForm = ({ zone, isEditing, onSave, onCancel, onChange , onEdit }) => {
+  const dispatch = useDispatch();
+  const { informationStores} = useSelector((state) => state.user);
+  const { categories} = useSelector((state) => state.products);
+  useEffect(() => {
+    if (informationStores && informationStores.length > 0) {
+        dispatch(fetchGetCategories({ storeId: informationStores[0].store_id }));
+    } 
+  }, [dispatch]);
+  
   return (
     <div className="mt-4 bg-gradient-to-r from-purple-50 to-blue-50 p-5 rounded-lg border-2 border-purple-300">
       <h3 className="font-semibold mb-4 text-purple-900 text-lg">
@@ -47,7 +58,7 @@ const ZoneForm = ({ zone, isEditing, onSave, onCancel, onChange , onEdit }) => {
             className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
           >
             <option value="">-- Chọn phân loại --</option>
-            {CATEGORIES.map((cat) => (
+            {categories?.map((cat) => (
               <option key={cat} value={cat}>
                 {cat}
               </option>

@@ -8,6 +8,8 @@ const initialState = {
     storeId:"",
     storeName:""
   },
+  cameraSelected: "",
+  listcaermaCodes: [],
   isLoading: false,
   error: null,
 };
@@ -84,6 +86,8 @@ const userSlice = createSlice({
           return;
         }
         const {store_id, store_name} = action.payload.listStore[0]|| {};
+        state.cameraSelected = action.payload.listcameraCodes[0] || "";
+        state.listcaermaCodes = action.payload.listcameraCodes || [];
         state.selectStore.storeId = store_id || "";
         state.selectStore.storeName = store_name || "";
 

@@ -48,10 +48,6 @@ const Downtime = () => {
   return (
     <div className="w-full max-w-full overflow-x-hidden p-4 md:p-6 pb-20 bg-gray-50 min-h-screen font-sans text-slate-800">
       
-      <div className="mb-6">
-        <h1 className="text-xl md:text-2xl font-bold text-slate-900">Phân tích thời gian dừng</h1>
-        <p className="text-sm text-slate-500 mt-1">Tổng quan hiệu suất giữ chân khách hàng</p>
-      </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6">
         <StatCard 
             title="TG dừng TB lâu nhất" 

@@ -1,7 +1,6 @@
 import { useState, useRef } from "react";
 import { useDispatch } from "react-redux"; 
 import { fetchImportInvoice } from "../dashboard.thunk"; 
-
 import {
   Calendar,
   Download,
@@ -9,7 +8,9 @@ import {
   Database,
   Upload,
 } from "lucide-react";
+import {getAsyncAPI} from "../../../services/asyn.api"
 import {setSelectStore} from "../../ManagerUser/userSlice"
+import toast from "react-hot-toast";
 export default function StoreFilter({ 
   selectedStore, 
   timeRange, 
@@ -28,7 +29,6 @@ export default function StoreFilter({
     { value: "30days", label: "30 ngày qua" },
     { value: "quarter", label: "Quý này" },
     { value: "year", label: "Năm nay" },
-    { value: "custom", label: "Tùy chỉnh" },
   ];
   const handleImportPOS = () => {
     if (selectedStore === "all") {
@@ -72,14 +72,21 @@ export default function StoreFilter({
       setIsImporting(false); // Tắt loading
     }
   };
-  // --- KẾT THÚC LOGIC IMPORT ---
 
   const handleSync = () => {
     setIsSyncing(true);
-    setTimeout(() => {
-      setIsSyncing(false);
-      alert("Đồng bộ dữ liệu thành công!");
-    }, 2000);
+    const fetchAsyncData = async( storeId , range ) => {
+       try {
+          const res = await getAsyncAPI({storeId , range});
+          toast.success("✅ Đồng bộ dữ liệu thành công!");
+          setIsSyncing(false);
+          return res;
+       } catch (error) {
+          console.error("Lỗi đồng bộ dữ liệu:", error);
+       }
+    }
+    
+    fetchAsyncData(informationStores.store_id);
   };
 
   const handleExport = () => {
@@ -106,14 +113,12 @@ const selectStoreFillter = (e) => {
         <Database size={18} className={isSyncing ? "animate-spin" : ""} />
         <span className="text-sm font-medium">Đồng bộ</span>
       </button>
-
       <button
-        onClick={handleImportPOS} // Gọi hàm kích hoạt input
+        onClick={handleImportPOS} 
         disabled={isImporting}
         className="flex items-center gap-2 px-4 py-2.5 bg-orange-50 text-orange-600 rounded-lg hover:bg-orange-100 transition disabled:opacity-50"
       >
         {isImporting ? (
-          // Hiệu ứng loading
           <Upload size={18} className="animate-bounce" />
         ) : (
           <Upload size={18} />

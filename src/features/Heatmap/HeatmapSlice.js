@@ -37,6 +37,7 @@ const HeatmapSlice = createSlice({
       })
       .addCase(fetchMatrixHeatmap.fulfilled, (state, action) => {
         const heatmapData = action.payload.heatmap;
+
         const { background_image, zones } = action.payload.zone_information;
         state.infoHeatmapMatrix = [];
         state.timeLine = [];
@@ -66,7 +67,7 @@ const HeatmapSlice = createSlice({
           state.timeLine.push (time_stamp)
           state.infoHeatmapMatrix.push(newInfor);
         }
-        state.currentHeatmap = state.infoHeatmapMatrix.filter( item  => Math.max(...state.timeLine) === item.timeStamp );
+        state.currentHeatmap = state.infoHeatmapMatrix.filter( item  => Math.max(...state.timeLine) === item.timeStamp ) ;
         state.startTimeLine = state.infoHeatmapMatrix[0]?.date || 0;
         state.endTimeLine = state.infoHeatmapMatrix[state.infoHeatmapMatrix.length -1]?.date || 0; 
         

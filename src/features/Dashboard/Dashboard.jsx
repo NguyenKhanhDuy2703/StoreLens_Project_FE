@@ -6,7 +6,6 @@ import {
   Clock,
 } from "lucide-react";
 import KPICard from "./components/KPICard";
-import StatusBar from "./components/StatusBar";
 import TrafficChart from "./components/TrafficChart";
 import TopProducts from "./components/TopProducts";
 import ZonePerformanceTable from "./components/ZonePerformanceTable";
@@ -18,10 +17,10 @@ import {
   fetchGetChartData,
   fetchGetTopProducts,
   fetchGetZonePerformance,
-} from "./dashboard.thunk"; /////
+} from "./dashboard.thunk"; 
 import StoreFilter from "./components/Fillter";
 const StoreLensDashboard = () => {
-  const [storeId, setStoreId] = useState("STORE001");
+  const [storeId, setStoreId] = useState("");
   const [range, setRange] = useState("today");
   const dispatch = useDispatch();
   const {
@@ -38,13 +37,18 @@ const StoreLensDashboard = () => {
     (state) => state.dashboard.performaceZone
   );
   const {informationStores} = useSelector((state) => state.user);
+  if (informationStores.length > 0 && !storeId) {
+    setStoreId(informationStores[0].store_id);
+  }
   useEffect(() => {
+    if (!storeId) return;
     (async () => {
       dispatch(fecthGetStatusMetrics({ storeId, range }));
       dispatch(fetchGetChartData({ storeId, range }));
       dispatch(fetchGetTopProducts({ storeId, range }));
       dispatch(fetchGetZonePerformance({ storeId, range }));
     })();
+    
   }, [storeId, range]);
   if (isLoading) {
     return (
@@ -97,7 +101,7 @@ const StoreLensDashboard = () => {
         />
         <KPICard
           title="Thời gian ở lại TB"
-          value={`${avgSessionDuration}p`}
+          value={`${avgSessionDuration}s`}
           subtitle="so với hôm qua"
           trend="up"
           trendValue="+3p"
@@ -105,13 +109,6 @@ const StoreLensDashboard = () => {
           color="pink"
         />
       </div>
-      {/* <div className="mb-8">
-        <StatusBar
-          customerCurrent={customerCurrent}
-          checkoutLength={checkoutLength}
-          peakHours={peakHours}
-        />
-      </div> */}
       <div className="flex flex-col lg:flex-row gap-8 mb-8">
         <div className="lg:flex-[2]">
           <TrafficChart dataCharts={dataCharts} />

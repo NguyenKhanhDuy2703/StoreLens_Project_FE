@@ -31,7 +31,6 @@ const HeatmapCanvas = ({ storeId, cameraCode, isLoading, timeLine }) => {
   const { currentHeatmap, startTimeLine, endTimeLine } = useSelector(
     (state) => state.heatmap
   );
-
   const onChangeFrame = (value) => {
     dispatch(setCurrentHeatmap(timeLine[value]));
     setCurrentFrame(value);
@@ -66,12 +65,12 @@ const HeatmapCanvas = ({ storeId, cameraCode, isLoading, timeLine }) => {
     updateDimensions();
     window.addEventListener("resize", updateDimensions);
     return () => window.removeEventListener("resize", updateDimensions);
-  }, [frameWidth, frameHeight, currentHeatmap.length]);
+  }, [frameWidth, frameHeight, currentHeatmap.length ,dispatch]);
 
   if (isLoading) {
     return <Loading isLoading={true} />;
   }
-
+console.log("-> Rerender HeatmapCanvas with currentHeatmap:", currentHeatmap);
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 h-full flex flex-col">
       {/* Header */}
