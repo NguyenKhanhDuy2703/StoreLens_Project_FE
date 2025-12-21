@@ -17,7 +17,7 @@ const  TrafficChart = ({ dataCharts }) => {
       setChartData({ traffic, sales });
     }
   }, [dataCharts]);
-  const hours = chartData.traffic.map((item) => `${item.hour}s`);
+  const hours = chartData.traffic.map((item) => `${item.hour}h`);
   const maxTraffic =
     chartData.traffic.length > 0
       ? Math.max(...chartData.traffic.map((d) => d.value), 10)

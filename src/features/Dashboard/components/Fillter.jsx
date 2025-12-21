@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useMemo } from "react"; // Thêm useCallback, useMemo
-import { useDispatch } from "react-redux";
-import { fetchImportInvoice } from "../dashboard.thunk";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchExportReport, fetchImportInvoice } from "../dashboard.thunk";
 import {
   Calendar,
   Download,
@@ -12,14 +12,14 @@ import { getAsyncAPI } from "../../../services/asyn.api";
 import { setSelectStore } from "../../ManagerUser/userSlice";
 import toast from "react-hot-toast";
 import useBackgroundSync from "../../../utils/useBackgroundSync"; // Import Hook
-
+import { STORE_REPORT_CONFIG } from "../../../constants/reportConfig";
 export default function StoreFilter({ selectedStore, informationStores }) {
   const dispatch = useDispatch();
   const fileInputRef = useRef(null);
   const [timeRange, setTimeRange] = useState("today");
   const [isSyncing, setIsSyncing] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
-
+  const [isExporting, setIsExporting] = useState(false);
   const timeRangeOptions = [
     { value: "today", label: "Hôm nay" },
     { value: "yesterday", label: "Hôm qua" },
@@ -28,12 +28,11 @@ export default function StoreFilter({ selectedStore, informationStores }) {
     { value: "quarter", label: "Quý này" },
     { value: "year", label: "Năm nay" },
   ];
-
+  const {  selectStore } = useSelector((state) => state.user || {});
   // 1. Helper để lấy StoreID hiện tại an toàn
   const currentStoreId = useMemo(() => {
     try {
       if (!selectedStore) return informationStores?.[0]?.store_id;
-      // Nếu selectedStore là JSON string thì parse, nếu là object thì lấy trực tiếp
       const parsed = typeof selectedStore === 'string' ? JSON.parse(selectedStore) : selectedStore;
       return parsed.storeId || informationStores?.[0]?.store_id;
     } catch (e) {
@@ -67,7 +66,6 @@ export default function StoreFilter({ selectedStore, informationStores }) {
 
   // --- Các hàm xử lý Import/Export giữ nguyên ---
   const handleImportPOS = () => {
-    // ... logic cũ
     if (!currentStoreId) { 
        alert("⚠️ Vui lòng chọn một cửa hàng cụ thể để Import dữ liệu!");
        return;
@@ -112,10 +110,80 @@ export default function StoreFilter({ selectedStore, informationStores }) {
       setIsImporting(false);
     }
   };
-
-  const handleExport = () => {
-    alert("Đang xuất báo cáo...");
+  const getCurrentStoreId = () => {
+    try {
+      if (selectStore) {
+        if (typeof selectStore === 'object') {
+           return selectStore.storeId;
+        }
+        const parsed = JSON.parse(selectStore);
+        return parsed.storeId;
+      }
+      if (informationStores && informationStores.length > 0) {
+        return informationStores[0].store_id;
+      }
+    } catch (error) {
+      console.error("Lỗi lấy Store ID:", error);
+    }
+    return null;
   };
+  const handleExport = async () => {
+    const storeIdToExport = getCurrentStoreId();
+
+    if (!storeIdToExport) {
+      toast.error("⚠️ Vui lòng chọn một cửa hàng để xuất báo cáo!");
+      return;
+    }
+    const currentStoreData = informationStores?.find(s => s.store_id === storeIdToExport);
+    const managerName = currentStoreData?.manager_infor?.name || "Quản lý cửa hàng";
+    const storeAddress = currentStoreData?.address || "Địa chỉ chưa cập nhật";
+
+    console.log("📤 Đang gửi yêu cầu xuất báo cáo:", { storeIdToExport, managerName });
+
+    setIsExporting(true);
+    const toastId = toast.loading("Đang tạo báo cáo Excel...");
+
+    try {
+      const resultAction = await dispatch(
+        fetchExportReport({
+          storeId: storeIdToExport,
+          range: timeRange,
+          managerName: managerName,   // Gửi tên quản lý
+          storeAddress: storeAddress, // Gửi địa chỉ
+          reportConfig: STORE_REPORT_CONFIG,
+        })
+      );
+      if (fetchExportReport.fulfilled.match(resultAction)) {
+        const { data, headers } = resultAction.payload;
+        const url = window.URL.createObjectURL(new Blob([data]));
+        const link = document.createElement("a");
+        link.href = url;
+      
+        let fileName = `BaoCao_${storeIdToExport}_${timeRange}.xlsx`;
+        const contentDisposition = headers["content-disposition"];
+        if (contentDisposition) {
+           const match = contentDisposition.match(/filename="?([^"]+)"?/);
+           if (match && match[1]) fileName = match[1];
+        }
+
+        link.setAttribute("download", fileName);
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
+        window.URL.revokeObjectURL(url);
+
+        toast.success("✅ Xuất báo cáo thành công!", { id: toastId });
+      } else {
+        toast.error(`❌ Lỗi Server: ${resultAction.payload?.message || "Không xác định"}`, { id: toastId });
+      }
+    } catch (error) {
+      console.error("Lỗi Export:", error);
+      toast.error("❌ Có lỗi xảy ra khi xuất file.", { id: toastId });
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
 
   const selectStoreFillter = (e) => {
     dispatch(setSelectStore(JSON.parse(e)));

@@ -5,6 +5,7 @@ import {
   getTopProducts,
   getZonePerformance,
   importInvoice,
+  exportExcelReport,
 } from "../../services/dashboard.api";
 export const fecthGetStatusMetrics = createAsyncThunk(
   "dashboard/fetchGetStatusMetrics",
@@ -64,7 +65,7 @@ export const fetchGetZonePerformance = createAsyncThunk(
     }
   }
 );
-// ==== import invoice
+
 export const fetchImportInvoice = createAsyncThunk(
   "dashboard/fetchImportInvoice",
   async ({ storeId, file }, thunkAPI) => {
@@ -73,11 +74,30 @@ export const fetchImportInvoice = createAsyncThunk(
         storeId,
         file,
       });
-      return response; // Trả về data thành công
+      return response; 
     } catch (error) {
-      // Lấy message lỗi từ backend trả về
       const message = error.response?.data?.message || "Import thất bại";
       return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+export const fetchExportReport = createAsyncThunk(
+  "dashboard/fetchExportReport",
+  async ({ storeId, range, managerName, storeAddress, reportConfig , thunkAPI }) => {
+    try {
+      const response = await exportExcelReport({
+        storeId,        
+        range,
+        managerName,    
+        storeAddress,  
+        reportConfig
+      });
+      return {
+          data: response.data,
+          headers: response.headers
+      };
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message || "Xuất báo cáo thất bại");
     }
   }
 );
