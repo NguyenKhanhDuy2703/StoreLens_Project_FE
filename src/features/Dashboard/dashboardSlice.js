@@ -1,5 +1,12 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import {fecthGetStatusMetrics , fetchGetChartData , fetchGetTopProducts , fetchGetZonePerformance ,fetchImportInvoice}from "./dashboard.thunk"
+import { createSlice } from "@reduxjs/toolkit";
+import {
+  fecthGetStatusMetrics,
+  fetchGetChartData,
+  fetchGetTopProducts,
+  fetchGetZonePerformance,
+  fetchImportInvoice,
+  fetchExportReport,
+} from "./dashboard.thunk";
 const dashboardSlice = createSlice({
   name: "dashboard",
   initialState: {
@@ -29,15 +36,17 @@ const dashboardSlice = createSlice({
       isLoading: false,
     },
     importStatus: {
-        isLoading: false,
-        success: false,
-        error: null
-    }
-  
+      isLoading: false,
+      success: false,
+      error: null,
+    },
+    exportStatus: {
+      isLoading: false,
+      success: false,
+      error: null,
+    },
   },
-  
-  reducers: {}, ///
-
+  reducers: {},
   extraReducers: (builder) => {
     // handle fecthGetStatusMetrics
     builder.addCase(fecthGetStatusMetrics.pending, (state) => {
@@ -118,7 +127,7 @@ const dashboardSlice = createSlice({
       state.isLoading = false;
     });
 
-    // import dux lieeuj 
+    // import dux liệu
 
     builder.addCase(fetchImportInvoice.pending, (state) => {
       state.importStatus.isLoading = true;
@@ -134,6 +143,21 @@ const dashboardSlice = createSlice({
       state.importStatus.isLoading = false;
       state.importStatus.success = false;
       state.importStatus.error = action.payload; // Message lỗi từ Thunk
+    });
+    // export báo cáo
+    builder.addCase(fetchExportReport.pending, (state) => {
+      state.exportStatus.isLoading = true;
+      state.exportStatus.success = false;
+      state.exportStatus.error = null;
+    });
+    builder.addCase(fetchExportReport.fulfilled, (state) => {
+      state.exportStatus.isLoading = false;
+      state.exportStatus.success = true;
+    });
+    builder.addCase(fetchExportReport.rejected, (state, action) => {
+      state.exportStatus.isLoading = false;
+      state.exportStatus.success = false;
+      state.exportStatus.error = action.payload;
     });
   },
 });

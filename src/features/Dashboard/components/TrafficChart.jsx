@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import EmptyState from "../../../components/common/EmptyState";
 
-const TrafficChart = ({ dataCharts }) => {
+const  TrafficChart = ({ dataCharts }) => {
   const [chartData, setChartData] = useState({ traffic: [], sales: [] });
 
   useEffect(() => {

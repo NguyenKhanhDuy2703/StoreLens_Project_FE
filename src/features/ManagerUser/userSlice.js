@@ -22,6 +22,15 @@ const userSlice = createSlice({
       const { storeId, storeName } = action.payload;
       state.selectStore.storeId = storeId
       state.selectStore.storeName = storeName
+    } ,
+    resetInformationStore: (state , action ) => {
+      state.informationStores = [];
+      state.selectStore = {
+        storeId:"",
+        storeName:""
+      }
+      state.cameraSelected = "";
+      state.listcaermaCodes = [];
     }
   },
   extraReducers: (builder) => {
@@ -98,5 +107,5 @@ const userSlice = createSlice({
       })
   },
 });
-export const { setSelectStore } = userSlice.actions;
+export const { setSelectStore  , resetInformationStore} = userSlice.actions;
 export default userSlice.reducer;

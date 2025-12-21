@@ -14,6 +14,7 @@ import { useDispatch } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { fecthLogout } from "../features/Authentication/authen.thunk";
+import { resetInformationStore } from "../features/ManagerUser/UserSlice";
 
 const Header = ({ user, selectStore }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -25,6 +26,7 @@ const Header = ({ user, selectStore }) => {
   const handleLogout = async () => {
     try {
       await dispatch(fecthLogout()).unwrap();
+      await dispatch(resetInformationStore());
       dispatch({ type: "authen/resetState" });
       toast.success("Đăng xuất thành công!");
       setTimeout(() => {

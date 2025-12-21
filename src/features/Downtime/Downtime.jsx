@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { use, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Clock, Zap, BarChart3 } from 'lucide-react';
 
@@ -20,9 +20,9 @@ import {formatSeconds} from "../../utils/formatSec"
 const Downtime = () => {
   const dispatch = useDispatch();
   const { kpis, isLoadingKPI } = useSelector((state) => state.downtime);
-
+ const {informationStores , selectStore } = useSelector((state) => state.user);
   useEffect(() => {
-    const params = { storeId: "STORE001", range: "today" };
+    const params = { storeId: selectStore.storeId , range: "today" };
     dispatch(fetchDowntimeKPI(params));
     dispatch(fetchEfficiencyStats(params));
     dispatch(fetchDowntimeList(params));

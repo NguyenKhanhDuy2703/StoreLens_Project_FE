@@ -4,6 +4,7 @@ import {
 } from 'lucide-react';
 import currency from 'currency.js';
 import EmptyState from '../../../components/common/EmptyState';
+import { formatCurrency } from '../../../utils/formatCurrency';
 
 const TopProducts = ({ dataProducts }) => {
   const isEmpty = !dataProducts?.products || dataProducts?.products.length === 0;
@@ -36,11 +37,7 @@ const TopProducts = ({ dataProducts }) => {
               </div>
               <div className="flex items-center gap-4">
                 <span className="text-green-600 font-bold text-base">
-                  {currency(product.total_revenue, {
-                    symbol: '₫',
-                    separator: '.',
-                    decimal: ','
-                  }).format()}
+                  {formatCurrency(product.total_revenue)}
                 </span>
 
                 {product.trend === 'up' ? (

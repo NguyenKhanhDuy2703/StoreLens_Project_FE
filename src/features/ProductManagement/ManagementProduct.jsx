@@ -3,6 +3,7 @@ import { Search, Edit2, Trash2, Package, TrendingUp, TrendingDown, Filter, Chevr
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchGetProducts, fetchGetCategories } from './products.thunk';
 import { prevPage, nextPage } from './productSlice';
+import { formatCurrency } from '../../utils/formatCurrency';
 
 const ProductManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -34,8 +35,6 @@ const ProductManagement = () => {
   };
 
   const handleSaveEdit = () => {
-    // TODO: Dispatch action để update sản phẩm
-    // dispatch(updateProduct(editingProduct));
     setShowEditModal(false);
     setEditingProduct(null);
   };
@@ -184,7 +183,7 @@ const ProductManagement = () => {
                         <span className="text-sm text-gray-700 font-medium">{product.brand}</span>
                       </td>
                       <td className="py-2 px-3 text-right">
-                        <span className="font-semibold text-sm text-gray-900">₫{product.price.toLocaleString()}</span>
+                        <span className="font-semibold text-sm text-gray-900">{formatCurrency(product.price)}</span>
                       </td>
                       <td className="py-2 px-3 text-center">
                         <span className={`font-bold text-base ${

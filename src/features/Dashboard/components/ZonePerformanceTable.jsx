@@ -4,6 +4,7 @@ import {
 } from 'lucide-react';
 import EmptyState from '../../../components/common/EmptyState';
 import { formatSeconds } from '../../../utils/formatSec';
+import { formatCurrency } from '../../../utils/formatCurrency';
 const ZonePerformanceTable = ({zonePerformance}) => {
 
   const isEmpty = !zonePerformance?.zones || zonePerformance?.zones.length === 0;
@@ -32,7 +33,7 @@ const ZonePerformanceTable = ({zonePerformance}) => {
                 <td className="py-4 px-4 text-gray-900 font-semibold text-sm">{zone.category_name}</td>
                 <td className="py-4 px-4 text-gray-700 text-sm font-medium">{zone.people_count}</td>
                 <td className="py-4 px-4 text-gray-700 text-sm font-medium">{formatSeconds(zone.avg_dwell_time) +"s"}</td>
-                <td className="py-4 px-4 text-green-600 font-bold text-sm">{zone.total_sales_value}</td>
+                <td className="py-4 px-4 text-green-600 font-bold text-sm">{formatCurrency(zone.total_sales_value)}</td>
                 <td className="py-4 px-4 bg-gradient-to-r from-blue-50 to-indigo-50">
                   <span className="inline-flex items-center px-3 py-1 rounded-full text-blue-700 font-bold text-sm bg-white shadow-sm">
                     {Math.round(zone.conversion_rate)}%

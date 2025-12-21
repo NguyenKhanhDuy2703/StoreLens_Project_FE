@@ -53,14 +53,9 @@ export const getZonePerformance = async ({ storeId, range  }) => {
 
 export const importInvoice = async ({ storeId, file }) => {
     try {
-        // 1. Tạo FormData
         const formData = new FormData();
-        formData.append("file", file);      // Key 'file' khớp với Backend
-        formData.append("store_id", storeId); // Key 'store_id' khớp với Backend
-
-        // 2. Gọi API
-        // Lưu ý: Backend route là /invoices/import chứ không phải /dashboard
-        // Ta không dùng BASE_URL ở đây để tránh sai đường dẫn
+        formData.append("file", file);     
+        formData.append("store_id", storeId); 
         const response = await axiosInstance.post("/invoices/import", formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
@@ -72,3 +67,25 @@ export const importInvoice = async ({ storeId, file }) => {
         throw error;
     }
 }
+export const exportExcelReport = async ({
+  storeId,range,managerName,storeAddress,reportConfig,
+}) => {
+
+  const payload = {
+    store_id: storeId,       
+    range,
+    startDate: "2025-12-13",  
+    endDate: "2025-12-21",
+    managerName,
+    storeAddress,
+    reportConfig: {
+      overviewHeaders: reportConfig.overviewHeaders,
+      timeHeaders: reportConfig.timeHeaders ?? [], 
+      zoneHeaders: reportConfig.zoneHeaders,
+      productHeaders: reportConfig.productHeaders,
+    }
+  };
+  return axiosInstance.post("/report/export", payload, {
+    responseType: "blob",
+  });
+};
