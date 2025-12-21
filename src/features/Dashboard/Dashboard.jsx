@@ -19,6 +19,7 @@ import {
   fetchGetZonePerformance,
 } from "./dashboard.thunk"; 
 import StoreFilter from "./components/Fillter";
+import { formatCurrency } from "../../utils/formatCurrency";
 const StoreLensDashboard = () => {
   const [storeId, setStoreId] = useState("");
   const [range, setRange] = useState("today");
@@ -74,7 +75,7 @@ const StoreLensDashboard = () => {
         />
         <KPICard
           title="Tổng doanh thu"
-          value={currency(totalSales, { symbol: '₫', separator: '.', decimal: ',' }).format()}
+          value={formatCurrency(totalSales)}
           subtitle="so với hôm qua"
           trend="up"
           trendValue="+5.2%"
@@ -92,7 +93,7 @@ const StoreLensDashboard = () => {
         />
         <KPICard
           title="Giá trị đơn hàng TB"
-          value={currency(avgOrderValue, { symbol: '₫', separator: '.', decimal: ',' }).format()}
+          value={formatCurrency(avgOrderValue)}
           subtitle="mỗi giao dịch"
           trend="up"
           trendValue="+8.1%"

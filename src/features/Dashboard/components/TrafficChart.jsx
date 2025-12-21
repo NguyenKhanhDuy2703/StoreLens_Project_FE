@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import EmptyState from "../../../components/common/EmptyState";
 
-const TrafficChart = ({ dataCharts }) => {
+const  TrafficChart = ({ dataCharts }) => {
   const [chartData, setChartData] = useState({ traffic: [], sales: [] });
 
   useEffect(() => {
@@ -17,7 +17,7 @@ const TrafficChart = ({ dataCharts }) => {
       setChartData({ traffic, sales });
     }
   }, [dataCharts]);
-  const hours = chartData.traffic.map((item) => `${item.hour}h`);
+  const hours = chartData.traffic.map((item) => `${item.hour}s`);
   const maxTraffic =
     chartData.traffic.length > 0
       ? Math.max(...chartData.traffic.map((d) => d.value), 10)

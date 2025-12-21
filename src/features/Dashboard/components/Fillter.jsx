@@ -1,6 +1,6 @@
-import { useState, useRef } from "react";
-import { useDispatch } from "react-redux"; 
-import { fetchImportInvoice } from "../dashboard.thunk"; 
+import { useState, useRef, useCallback, useMemo } from "react"; // Thêm useCallback, useMemo
+import { useDispatch } from "react-redux";
+import { fetchImportInvoice } from "../dashboard.thunk";
 import {
   Calendar,
   Download,
@@ -8,19 +8,18 @@ import {
   Database,
   Upload,
 } from "lucide-react";
-import {getAsyncAPI} from "../../../services/asyn.api"
-import {setSelectStore} from "../../ManagerUser/userSlice"
+import { getAsyncAPI } from "../../../services/asyn.api";
+import { setSelectStore } from "../../ManagerUser/userSlice";
 import toast from "react-hot-toast";
-export default function StoreFilter({ 
-  selectedStore, 
-  informationStores
-}) {
-  const dispatch = useDispatch(); 
-  const fileInputRef = useRef(null); 
+import useBackgroundSync from "../../../utils/useBackgroundSync"; // Import Hook
+
+export default function StoreFilter({ selectedStore, informationStores }) {
+  const dispatch = useDispatch();
+  const fileInputRef = useRef(null);
   const [timeRange, setTimeRange] = useState("today");
   const [isSyncing, setIsSyncing] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
-  
+
   const timeRangeOptions = [
     { value: "today", label: "Hôm nay" },
     { value: "yesterday", label: "Hôm qua" },
@@ -29,16 +28,56 @@ export default function StoreFilter({
     { value: "quarter", label: "Quý này" },
     { value: "year", label: "Năm nay" },
   ];
+
+  // 1. Helper để lấy StoreID hiện tại an toàn
+  const currentStoreId = useMemo(() => {
+    try {
+      if (!selectedStore) return informationStores?.[0]?.store_id;
+      // Nếu selectedStore là JSON string thì parse, nếu là object thì lấy trực tiếp
+      const parsed = typeof selectedStore === 'string' ? JSON.parse(selectedStore) : selectedStore;
+      return parsed.storeId || informationStores?.[0]?.store_id;
+    } catch (e) {
+      return informationStores?.[0]?.store_id;
+    }
+  }, [selectedStore, informationStores]);
+
+  // 2. Định nghĩa hàm sync dữ liệu (Dùng chung cho cả Auto và Manual)
+  const syncData = useCallback(async () => {
+    if (!currentStoreId) return;
+    setIsSyncing(true)
+    try {
+      await getAsyncAPI({ storeId: currentStoreId, range: timeRange });
+    } catch (error) {
+      console.error("Lỗi đồng bộ dữ liệu:", error);
+      setIsSyncing(false);
+    }finally {
+      setIsSyncing(false);
+    }
+  }, [currentStoreId, timeRange]);
+
+  // 3. Kích hoạt Hook chạy nền 
+  useBackgroundSync(syncData, 60);
+  // 4. Xử lý nút bấm thủ công (Manual Sync)
+  const handleManualSync = async () => {
+    setIsSyncing(true);
+    await syncData(); // Gọi lại hàm logic ở trên
+    setIsSyncing(false);
+    toast.success("✅ Đồng bộ dữ liệu thành công!");
+  };
+
+  // --- Các hàm xử lý Import/Export giữ nguyên ---
   const handleImportPOS = () => {
-    if (selectedStore === "all") {
-      alert("⚠️ Vui lòng chọn một cửa hàng cụ thể để Import dữ liệu!");
-      return;
+    // ... logic cũ
+    if (!currentStoreId) { 
+       alert("⚠️ Vui lòng chọn một cửa hàng cụ thể để Import dữ liệu!");
+       return;
     }
     if (fileInputRef.current) {
-      fileInputRef.current.value = ""; 
+      fileInputRef.current.value = "";
       fileInputRef.current.click();
     }
   };
+
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -48,12 +87,12 @@ export default function StoreFilter({
       return;
     }
 
-    setIsImporting(true); 
+    setIsImporting(true);
 
     try {
       const resultAction = await dispatch(
         fetchImportInvoice({
-          storeId: selectedStore,
+          storeId: selectedStore, // Lưu ý: API import có thể cần chuỗi JSON gốc hoặc ID, tùy BE
           file: file,
         })
       );
@@ -61,6 +100,8 @@ export default function StoreFilter({
       if (fetchImportInvoice.fulfilled.match(resultAction)) {
         const count = resultAction.payload.count;
         alert(`✅ Import thành công ${count} hóa đơn!`);
+        // Sau khi import xong, có thể muốn sync lại dữ liệu ngay lập tức
+        handleManualSync(); 
       } else {
         alert(`❌ Lỗi: ${resultAction.payload}`);
       }
@@ -68,36 +109,18 @@ export default function StoreFilter({
       console.error("Lỗi upload:", error);
       alert("❌ Có lỗi xảy ra khi upload file.");
     } finally {
-      setIsImporting(false); // Tắt loading
+      setIsImporting(false);
     }
   };
-
-  const handleSync = () => {
-    setIsSyncing(true);
-    const fetchAsyncData = async( storeId , range ) => {
-       try {
-        console.log(storeId , range);
-          const res = await getAsyncAPI({storeId , range  });
-          toast.success("✅ Đồng bộ dữ liệu thành công!");
-          setIsSyncing(false);
-          return res;
-       } catch (error) {
-          console.error("Lỗi đồng bộ dữ liệu:", error);
-       }finally{
-          setIsSyncing(false);
-       }
-    }
-    
-    fetchAsyncData(informationStores[0].store_id ,timeRange);
-  };
-  
 
   const handleExport = () => {
     alert("Đang xuất báo cáo...");
   };
-const selectStoreFillter = (e) => {
-  dispatch(setSelectStore(JSON.parse(e)));
-}
+
+  const selectStoreFillter = (e) => {
+    dispatch(setSelectStore(JSON.parse(e)));
+  };
+
   const ActionButtons = () => (
     <div className="flex gap-3">
       <input
@@ -109,15 +132,17 @@ const selectStoreFillter = (e) => {
       />
 
       <button
-        onClick={handleSync}
+        onClick={handleManualSync} // Đổi thành hàm handleManualSync mới
         disabled={isSyncing}
         className="flex items-center gap-2 px-4 py-2.5 bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 transition disabled:opacity-50"
       >
         <Database size={18} className={isSyncing ? "animate-spin" : ""} />
         <span className="text-sm font-medium">Đồng bộ</span>
       </button>
+      
+      {/* ... Nút Import POS và Export giữ nguyên ... */}
       <button
-        onClick={handleImportPOS} 
+        onClick={handleImportPOS}
         disabled={isImporting}
         className="flex items-center gap-2 px-4 py-2.5 bg-orange-50 text-orange-600 rounded-lg hover:bg-orange-100 transition disabled:opacity-50"
       >
@@ -140,7 +165,6 @@ const selectStoreFillter = (e) => {
       </button>
     </div>
   );
- 
 
   return (
     <div className="w-full bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-3">
@@ -154,12 +178,18 @@ const selectStoreFillter = (e) => {
           </label>
           <div className="relative">
             <select
-              value={selectedStore}
+              value={selectedStore} // Đảm bảo value này khớp với logic onChange
               onChange={(e) => selectStoreFillter(e.target.value)}
               className="w-full appearance-none bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-700 focus:ring-2 focus:ring-blue-500 cursor-pointer"
             >
               {informationStores?.map((option) => (
-                <option key={option.store_id} value={JSON.stringify({storeId : option.store_id , storeName: option.store_name})}>
+                <option
+                  key={option.store_id}
+                  value={JSON.stringify({
+                    storeId: option.store_id,
+                    storeName: option.store_name,
+                  })}
+                >
                   {option.store_name}
                 </option>
               ))}
@@ -170,6 +200,8 @@ const selectStoreFillter = (e) => {
             />
           </div>
         </div>
+        
+        {/* Time Range Filter */}
         <div className="flex-1 flex flex-col gap-2">
           <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
             <Calendar size={16} className="text-blue-500" />

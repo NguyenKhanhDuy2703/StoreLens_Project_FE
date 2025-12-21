@@ -37,8 +37,7 @@ const HeatmapSlice = createSlice({
       })
       .addCase(fetchMatrixHeatmap.fulfilled, (state, action) => {
         const heatmapData = action.payload.heatmap;
-
-        const { background_image, zones } = action.payload.zone_information;
+        const { background_image, zones } = action?.payload?.zone_information;
         state.infoHeatmapMatrix = [];
         state.timeLine = [];
         for (const item of heatmapData) {

@@ -1,17 +1,11 @@
 import { useState, useRef, useEffect, use } from "react";
 import { Layer, Rect, Group, Stage } from "react-konva";
 import { SkipBack, SkipForward, ZoomIn, ZoomOut } from "lucide-react";
-import {
-  CameraImage,
-  DrawingPoints,
-  GridLines,
-  HeatmapGrid,
-  ZoneShape,
-} from "./CanvaHeatmap";
+import { CameraImage, GridLines, HeatmapGrid } from "./CanvaHeatmap";
 import Loading from "../../../components/common/Loading";
 import { setCurrentHeatmap } from "../HeatmapSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { formatVietnamDateHour } from "../../../utils/formatVietNam";
+import { DrawingPoints, ZoneShape } from "../../Map/components/ToolDrawZone";
 const HeatmapCanvas = ({ storeId, cameraCode, isLoading, timeLine }) => {
   const [zoom, setZoom] = useState(1);
   const [currentFrame, setCurrentFrame] = useState(0);
@@ -38,19 +32,15 @@ const HeatmapCanvas = ({ storeId, cameraCode, isLoading, timeLine }) => {
 
   const frameWidth = currentHeatmap[0]?.frameWidth || 634;
   const frameHeight = currentHeatmap[0]?.frameHeight || 360;
-  console.log(currentHeatmap);
-  // Tính toán kích thước canvas để fit vào container
   useEffect(() => {
     const updateDimensions = () => {
       if (containerRef.current && currentHeatmap.length > 0) {
         const container = containerRef.current;
-        const containerWidth = container.clientWidth - 32; // trừ padding
+        const containerWidth = container.clientWidth - 32;
         const containerHeight = container.clientHeight - 32;
-
-        // Tính tỷ lệ để fit vào container
         const scaleX = containerWidth / frameWidth;
         const scaleY = containerHeight / frameHeight;
-        const scale = Math.min(scaleX, scaleY, 1); // không zoom lớn hơn 100%
+        const scale = Math.min(scaleX, scaleY, 1);
 
         setDimensions({
           width: frameWidth,
@@ -65,12 +55,12 @@ const HeatmapCanvas = ({ storeId, cameraCode, isLoading, timeLine }) => {
     updateDimensions();
     window.addEventListener("resize", updateDimensions);
     return () => window.removeEventListener("resize", updateDimensions);
-  }, [frameWidth, frameHeight, currentHeatmap.length ,dispatch]);
+  }, [frameWidth, frameHeight, currentHeatmap.length, dispatch]);
 
   if (isLoading) {
     return <Loading isLoading={true} />;
   }
-console.log("-> Rerender HeatmapCanvas with currentHeatmap:", currentHeatmap);
+  console.log("-> Rerender HeatmapCanvas with currentHeatmap:", currentHeatmap);
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 h-full flex flex-col">
       {/* Header */}
@@ -148,8 +138,11 @@ console.log("-> Rerender HeatmapCanvas with currentHeatmap:", currentHeatmap);
                 <>
                   {currentHeatmap[0]?.zones.map((z, idx) => (
                     <Group key={idx}>
-                      <ZoneShape zone={z} />
-                      <DrawingPoints points={z.coordinates} />
+                      <ZoneShape
+                        zone={z}
+                        imageSize={{ width: frameWidth, height: frameHeight }}
+                      />
+                  
                     </Group>
                   ))}
                 </>
@@ -252,18 +245,7 @@ console.log("-> Rerender HeatmapCanvas with currentHeatmap:", currentHeatmap);
                 })}
               </div>
 
-              {/* <div
-                className="absolute -top-7 bg-purple-600 text-white px-2 py-0.5 rounded text-xs font-bold shadow-lg"
-                style={{
-                  left: `${(currentFrame / (timeLine.length - 1)) * 100}%`,
-                  transform: "translateX(-50%)",
-                }}
-              >
-                {timeLine[currentFrame] < 10
-                  ? `0${timeLine[currentFrame]}`
-                  : timeLine[currentFrame]}
-                :00
-              </div> */}
+    
             </div>
 
             <span className="text-xs text-gray-600 font-semibold whitespace-nowrap bg-gray-100 px-2 py-1 rounded">

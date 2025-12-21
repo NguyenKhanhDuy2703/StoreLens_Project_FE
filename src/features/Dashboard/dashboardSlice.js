@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import {fecthGetStatusMetrics , fetchGetChartData , fetchGetTopProducts , fetchGetZonePerformance ,fetchImportInvoice}from "./dashboard.thunk"
 const dashboardSlice = createSlice({
   name: "dashboard",
@@ -33,11 +33,8 @@ const dashboardSlice = createSlice({
         success: false,
         error: null
     }
-  
   },
-  
-  reducers: {}, ///
-
+  reducers: {},
   extraReducers: (builder) => {
     // handle fecthGetStatusMetrics
     builder.addCase(fecthGetStatusMetrics.pending, (state) => {
